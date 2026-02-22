@@ -1,4 +1,4 @@
-../HELP.md
+HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 #
@@ -39,8 +39,11 @@ build/
 .vscode/
 # Node
 angular-ui/node_modules/
+angular-ui/.angular/
 # OS
 .DS_Store
 # Build
 build/
 target/
+# Local database file
+demo-db.sqlite
