@@ -1,0 +1,23 @@
+<div class="app-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>{{ title }}</h1>
+    </div>
+    <ul class="nav-menu">
+      <li>
+        <a routerLink="/tasks" routerLinkActive="active">Tasks</a>
+      </li>
+      <li>
+        <a routerLink="/users" routerLinkActive="active">Users</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Task Management System. Built with Angular & Spring Boot.</p>
+  </footer>
+</div>
