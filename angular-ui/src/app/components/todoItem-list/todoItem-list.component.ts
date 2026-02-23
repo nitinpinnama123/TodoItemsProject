@@ -6,9 +6,9 @@ import { TodoItemService } from '../../services/todoItem.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'app-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css']
+  selector: 'app-todoItem-list',
+  templateUrl: './todoItem-list.component.html',
+  styleUrls: ['./todoItem-list.component.css']
 })
 export class TodoItemListComponent implements OnInit {
   todoItems: TodoItem[] = [];
@@ -20,7 +20,7 @@ export class TodoItemListComponent implements OnInit {
   selectedUserId?: number;
   selectedStatus?: TodoItemStatus;
   
-  // Make TaskStatus enum available in template
+  // Make TodoItemStatus enum available in template
   todoItemStatuses = Object.values(TodoItemStatus);
 
   constructor(
@@ -55,9 +55,9 @@ export class TodoItemListComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load tasks';
+        this.error = 'Failed to load todoItems';
         this.loading = false;
-        console.error('Error loading tasks:', err);
+        console.error('Error loading todoItems:', err);
       }
     });
   }
@@ -81,14 +81,14 @@ export class TodoItemListComponent implements OnInit {
   }
 
   deleteTodoItem(id: number): void {
-    if (confirm('Are you sure you want to delete this task?')) {
+    if (confirm('Are you sure you want to delete this todoItem?')) {
       this.todoItemService.deleteTodoItem(id).subscribe({
         next: () => {
           this.loadTodoItems();
         },
         error: (err) => {
-          this.error = 'Failed to delete task';
-          console.error('Error deleting task:', err);
+          this.error = 'Failed to delete todoItem';
+          console.error('Error deleting todoItem:', err);
         }
       });
     }
@@ -114,7 +114,7 @@ export class TodoItemListComponent implements OnInit {
         this.loadTodoItems();
       },
       error: (err) => {
-        this.error = 'Failed to update task status';
+        this.error = 'Failed to update todoItem status';
         console.error('Error updating status:', err);
       }
     });

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="header">
     <h2>Todo Items</h2>
-    <button class="btn btn-primary" (click)="createTask()">
+    <button class="btn btn-primary" (click)="createTodoItem()">
       <i class="icon-plus"></i> Create Todo Item
     </button>
   </div>
@@ -20,7 +20,7 @@
       <label for="statusFilter">Filter by Status:</label>
       <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="onFilterChange()" class="form-control">
         <option [ngValue]="undefined">All Statuses</option>
-        <option *ngFor="let status of taskStatuses" [ngValue]="status">{{ status }}</option>
+        <option *ngFor="let status of todoItemStatuses" [ngValue]="status">{{ status }}</option>
       </select>
     </div>
 
@@ -35,46 +35,46 @@
     {{ error }}
   </div>
 
-  <div *ngIf="!loading && tasks.length === 0" class="empty-state">
+  <div *ngIf="!loading && todoItems.length === 0" class="empty-state">
     <p>No todo items found. Create your first todo item!</p>
   </div>
 
-  <div *ngIf="!loading && tasks.length > 0" class="task-grid">
-    <div *ngFor="let task of tasks" class="task-card">
-      <div class="task-header">
-        <h3>{{ task.title }}</h3>
-        <span class="status-badge" [ngClass]="getStatusClass(task.status)">
-          {{ task.status }}
+  <div *ngIf="!loading && todoItems.length > 0" class="todoItem-grid">
+    <div *ngFor="let todoItem of todoItems" class="todoItem-card">
+      <div class="todoItem-header">
+        <h3>{{ todoItem.title }}</h3>
+        <span class="status-badge" [ngClass]="getStatusClass(todoItem.status)">
+          {{ todoItem.status }}
         </span>
       </div>
 
-      <p class="task-description">{{ task.description || 'No description' }}</p>
+      <p class="todoItem-description">{{ todoItem.description || 'No description' }}</p>
 
-      <div class="task-meta">
+      <div class="todoItem-meta">
         <div class="assigned-to">
           <strong>Assigned to:</strong> 
-          {{ task.assignedTo?.fName || 'Unassigned' }}
+          {{ todoItem.assignedTo?.fName || 'Unassigned' }}
         </div>
-        <div class="dates" *ngIf="task.createdAt">
-          <small>Created: {{ task.createdAt | date:'short' }}</small>
+        <div class="dates" *ngIf="todoItem.createdAt">
+          <small>Created: {{ todoItem.createdAt | date:'short' }}</small>
         </div>
       </div>
 
-      <div class="task-actions">
+      <div class="todoItem-actions">
         <select 
           class="status-select" 
-          [value]="task.status" 
-          (change)="updateStatus(task.id!, $any($event.target).value)">
-          <option *ngFor="let status of taskStatuses" [value]="status">{{ status }}</option>
+          [value]="todoItem.status" 
+          (change)="updateStatus(todoItem.id!, $any($event.target).value)">
+          <option *ngFor="let status of todoItemStatuses" [value]="status">{{ status }}</option>
         </select>
         
-        <button class="btn btn-sm btn-secondary" (click)="viewTask(task.id!)">
+        <button class="btn btn-sm btn-secondary" (click)="viewTodoItem(todoItem.id!)">
           View
         </button>
-        <button class="btn btn-sm btn-info" (click)="editTask(task.id!)">
+        <button class="btn btn-sm btn-info" (click)="editTodoItem(todoItem.id!)">
           Edit
         </button>
-        <button class="btn btn-sm btn-danger" (click)="deleteTask(task.id!)">
+        <button class="btn btn-sm btn-danger" (click)="deleteTodoItem(todoItem.id!)">
           Delete
         </button>
       </div>

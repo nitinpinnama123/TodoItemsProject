@@ -9,6 +9,9 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
 import { TaskFormComponent } from './components/task-form/task-form.component';
+import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.component';
+import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -16,10 +19,13 @@ import { TaskFormComponent } from './components/task-form/task-form.component';
     UserListComponent,
     UserFormComponent,
     TaskListComponent,
-    TaskFormComponent
+    TaskFormComponent,
+    TodoItemListComponent,
+    TodoItemFormComponent
   ],
   imports: [
     BrowserModule,
+    RouterModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,

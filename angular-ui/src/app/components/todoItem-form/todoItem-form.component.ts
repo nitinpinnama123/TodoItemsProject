@@ -20,7 +20,7 @@ export class TodoItemFormComponent implements OnInit {
   error = '';
   submitted = false;
 
-  todoItemStatuses = Object.values(todoItemStatus);
+  todoItemStatuses = Object.values(TodoItemStatus);
 
   constructor(
     private fb: FormBuilder,

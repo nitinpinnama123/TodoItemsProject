@@ -37,7 +37,7 @@ export class TodoItemService {
         return this.getAllTodoItems(undefined, status);
       }
 
-      createTodoItem(TodoItemRequest: TodoItemRequest): Observable<TodoItem> {
+      createTodoItem(todoItemRequest: TodoItemRequest): Observable<TodoItem> {
         return this.http.post<TodoItem>(this.apiUrl, todoItemRequest);
       }
 
