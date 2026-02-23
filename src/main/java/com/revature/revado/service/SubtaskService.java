@@ -1,7 +1,11 @@
 package com.revature.revado.service;
 
+import com.revature.revado.dto.SubtaskRequest;
 import com.revature.revado.entity.Subtask;
+import com.revature.revado.entity.TodoItem;
+import com.revature.revado.exception.ResourceNotFoundException;
 import com.revature.revado.repository.SubtaskRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,34 +18,63 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SubtaskService {
-    private final SubtaskRepository subtaskRepo;
 
-    public Subtask createSubtask(Subtask subtask)
-    {
-        return subtaskRepo.save(subtask);
+    private final SubtaskRepository subtaskRepository;
+    private final TodoItemService todoService;
+
+
+    @Transactional
+    public List<Subtask> getTodoSubtasks(Long todoId, Long userId) {
+        // Verify user owns the todo
+        todoService.getTodoItemById(todoId);
+        return subtaskRepository.findByTodoId(todoId);
     }
 
-    public List<Subtask> getAllSubtasks() {
-        return subtaskRepo.findAll();
+    @Transactional
+    public Subtask getSubtaskById(Long subtaskId, Long todoId, Long userId) {
+        // Verify user owns the todo
+        todoService.getTodoItemById(todoId);
+
+        return subtaskRepository.findByIdAndTodoId(subtaskId, todoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subtask not found with id: " + subtaskId));
     }
 
-    public Subtask getSubTaskById(UUID id) {
-        return subtaskRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("SubTask not found"));
+    @Transactional
+    public Subtask createSubtask(Long todoId, SubtaskRequest request, Long userId) {
+        TodoItem todo = todoService.getTodoItemById(todoId);
+
+        Subtask subtask = new Subtask();
+        subtask.setTitle(request.getTitle());
+        subtask.setCompleted(request.getCompleted() != null ? request.getCompleted() : false);
+        subtask.setTodo(todo);
+
+        return subtaskRepository.save(subtask);
     }
 
-    public Subtask updateSubTask(UUID id, Subtask updatedSubTask) {
+    @Transactional
+    public Subtask updateSubtask(Long subtaskId, Long todoId, SubtaskRequest request, Long userId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoId, userId);
 
-        Subtask existing = getSubTaskById(id);
+        if (request.getTitle() != null) {
+            subtask.setTitle(request.getTitle());
+        }
+        if (request.getCompleted() != null) {
+            subtask.setCompleted(request.getCompleted());
+        }
 
-        existing.setSubtaskDesc(updatedSubTask.getSubtaskDesc());
-        existing.setStatus(updatedSubTask.getStatus());
-        existing.setTodoItem(updatedSubTask.getTodoItem());
-
-        return subtaskRepo.save(existing);
+        return subtaskRepository.save(subtask);
     }
 
-    public void deleteSubTask(UUID id) {
-        subtaskRepo.deleteById(id);
+    @Transactional
+    public Subtask toggleSubtaskComplete(Long subtaskId, Long todoId, Long userId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoId, userId);
+        subtask.setCompleted(!subtask.isCompleted());
+        return subtaskRepository.save(subtask);
+    }
+
+    @Transactional
+    public void deleteSubtask(Long subtaskId, Long todoId, Long userId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoId, userId);
+        subtaskRepository.delete(subtask);
     }
 }

@@ -2,6 +2,7 @@ package com.revature.revado.service;
 
 import com.revature.revado.entity.User;
 import com.revature.revado.repository.UserRepository;
+import org.h2.engine.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +47,7 @@ public class UserServiceTest {
     @Test
     void getAllUsers_ShouldReturnAllUsers() {
         // Arrange
-        List<User> users = Arrays.asList(user, new User(2L, "Jane", "Doe", "janedoe", "pwd", "jane.doe@example.com"));
+        List<User> users = Arrays.asList(user, new User(2L, "Jane", "Doe", "janedoe", "pwd", "jane.doe@example.com", User.Role.USER, null, null));
         when(userRepository.findAll()).thenReturn(users);
 
         // Act

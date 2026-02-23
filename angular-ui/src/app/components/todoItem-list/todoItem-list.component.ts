@@ -73,11 +73,11 @@ export class TodoItemListComponent implements OnInit {
   }
 
   viewTodoItem(id: number): void {
-    this.router.navigate(['/tasks', id]);
+    this.router.navigate(['/items', id]);
   }
 
   editTodoItem(id: number): void {
-    this.router.navigate(['/tasks', id, 'edit']);
+    this.router.navigate(['/items', id, 'edit']);
   }
 
   deleteTodoItem(id: number): void {
@@ -95,7 +95,7 @@ export class TodoItemListComponent implements OnInit {
   }
 
   createTodoItem(): void {
-    this.router.navigate(['/tasks/new']);
+    this.router.navigate(['/items/new']);
   }
 
   getStatusClass(status: TodoItemStatus): string {

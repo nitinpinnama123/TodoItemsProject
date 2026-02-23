@@ -30,12 +30,16 @@ public class UserRepoTest {
         user1 = new User();
         user1.setFName("John");
         user1.setLName("Doe");
+        user1.setUsername("john-doe");
         user1.setEmail("john.doe@example.com");
+        user1.setPassword("pwd");
 
         user2 = new User();
         user2.setFName("Jane");
         user2.setLName("Smith");
+        user2.setUsername("jane-smith");
         user2.setEmail("jane.smith@example.com");
+        user2.setPassword("pwd2");
     }
     @Test
     void findById_WhenUserExists_ShouldReturnUser()

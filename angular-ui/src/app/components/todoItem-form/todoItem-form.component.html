@@ -6,7 +6,7 @@
       {{ error }}
     </div>
 
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="todoItemForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="title">Title *</label>
         <input
@@ -15,7 +15,7 @@
           formControlName="title"
           class="form-control"
           [class.is-invalid]="submitted && f['title'].errors"
-          placeholder="Enter task title"
+          placeholder="Enter todoItem title"
         />
         <div *ngIf="submitted && f['title'].errors" class="invalid-feedback">
           <div *ngIf="f['title'].errors['required']">Title is required</div>
@@ -30,7 +30,7 @@
           formControlName="description"
           class="form-control"
           rows="4"
-          placeholder="Enter task description"
+          placeholder="Enter todoItem description"
         ></textarea>
       </div>
 
@@ -42,7 +42,7 @@
           class="form-control"
           [class.is-invalid]="submitted && f['status'].errors"
         >
-          <option *ngFor="let status of taskStatuses" [value]="status">
+          <option *ngFor="let status of todoItemStatuses" [value]="status">
             {{ status }}
           </option>
         </select>

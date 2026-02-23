@@ -1,38 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Task, TaskRequest, TaskStatus } from '../../models/task.model';
+import { TodoItem, TodoItemRequest, TodoItemStatus } from '../../models/todoItem.model';
 import { User } from '../../models/user.model';
-import { TaskService } from '../../services/task.service';
+import { TodoItemService } from '../../services/todoItem.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'app-task-form',
-  templateUrl: './task-form.component.html',
-  styleUrls: ['./task-form.component.css']
+  selector: 'app-todoItem-form',
+  templateUrl: './todoItem-form.component.html',
+  styleUrls: ['./todoItem-form.component.css']
 })
-export class TaskFormComponent implements OnInit {
-  taskForm: FormGroup;
+export class TodoItemFormComponent implements OnInit {
+  todoItemForm: FormGroup;
   users: User[] = [];
   isEditMode = false;
-  taskId?: number;
+  todoItemId?: number;
   loading = false;
   error = '';
   submitted = false;
 
-  taskStatuses = Object.values(TaskStatus);
+  todoItemStatuses = Object.values(todoItemStatus);
 
   constructor(
     private fb: FormBuilder,
-    private taskService: TaskService,
+    private todoItemService: TodoItemService,
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.taskForm = this.fb.group({
+    this.todoItemForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
-      status: [TaskStatus.PENDING, Validators.required],
+      status: [TodoItemStatus.PENDING, Validators.required],
       assignedToId: [null]
     });
   }
@@ -43,8 +43,8 @@ export class TaskFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
       this.isEditMode = true;
-      this.taskId = +id;
-      this.loadTask(this.taskId);
+      this.todoItemId = +id;
+      this.loadTodoItem(this.todoItemId);
     }
   }
 
@@ -59,85 +59,85 @@ export class TaskFormComponent implements OnInit {
     });
   }
 
-  loadTask(id: number): void {
+  loadTodoItem(id: number): void {
     this.loading = true;
-    this.taskService.getTaskById(id).subscribe({
-      next: (task) => {
-        this.taskForm.patchValue({
-          title: task.title,
-          description: task.description,
-          status: task.status,
-          assignedToId: task.assignedTo?.id
+    this.todoItemService.getTodoItemById(id).subscribe({
+      next: (todoItem) => {
+        this.todoItemForm.patchValue({
+          title: todoItem.title,
+          description: todoItem.description,
+          status: todoItem.status,
+          assignedToId: todoItem.assignedTo?.id
         });
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load task';
+        this.error = 'Failed to load todoItem';
         this.loading = false;
-        console.error('Error loading task:', err);
+        console.error('Error loading todoItem:', err);
       }
     });
   }
 
   get f() {
-    return this.taskForm.controls;
+    return this.todoItemForm.controls;
   }
 
   onSubmit(): void {
     this.submitted = true;
     this.error = '';
 
-    if (this.taskForm.invalid) {
+    if (this.todoItemForm.invalid) {
       return;
     }
 
     this.loading = true;
-    const formValue = this.taskForm.value;
+    const formValue = this.todoItemForm.value;
 
     if (this.isEditMode) {
-      // For update, send Task object
-      const task: Task = {
-        id: this.taskId,
+      // For update, send TodoItem object
+      const todoItem: TodoItem = {
+        id: this.todoItemId,
         title: formValue.title,
         description: formValue.description,
         createdBy: formValue.createdBy,
         status: formValue.status
       };
 
-      this.taskService.updateTask(this.taskId!, task).subscribe({
+      this.todoItemService.updateTodoItem(this.todoItemId!, todoItem).subscribe({
         next: () => {
           // If assignment changed, update it separately
-          this.router.navigate(['/tasks']);
+          this.router.navigate(['/todoItems']);
         },
         error: (err) => {
-          this.error = err.error?.message || 'Failed to update task';
+          this.error = err.error?.message || 'Failed to update todoItem';
           this.loading = false;
-          console.error('Error updating task:', err);
+          console.error('Error updating todoItem:', err);
         }
       });
     } else {
-      // For create, send TaskRequest
-      const taskRequest: TaskRequest = {
+      // For create, send TodoItemRequest
+      const todoItemRequest: TodoItemRequest = {
         title: formValue.title,
         description: formValue.description,
         status: formValue.status,
         assignedToId: formValue.assignedToId
       };
 
-      this.taskService.createTask(taskRequest).subscribe({
+      this.todoItemService.createTodoItem(todoItemRequest).subscribe({
         next: () => {
-          this.router.navigate(['/tasks']);
+          this.router.navigate(['/todoItems']);
         },
         error: (err) => {
-          this.error = err.error?.message || 'Failed to create task';
+          this.error = err.error?.message || 'Failed to create todoItem';
           this.loading = false;
-          console.error('Error creating task:', err);
+          console.error('Error creating todoItem:', err);
         }
       });
     }
   }
 
   onCancel(): void {
-    this.router.navigate(['/tasks']);
+    this.router.navigate(['/todoItems']);
   }
 }

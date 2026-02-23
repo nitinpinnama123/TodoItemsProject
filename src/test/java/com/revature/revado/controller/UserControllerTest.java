@@ -4,6 +4,7 @@ import com.revature.revado.entity.User;
 import com.revature.revado.repository.UserRepository;
 import com.revature.revado.service.UserService;
 import jakarta.transaction.Transactional;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import tools.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,8 +55,8 @@ public class UserControllerTest {
     @Test
     void getAllUsers_ShouldReturnUserList() throws Exception {
         // Arrange
-        User user1 = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
-        User user2 = new User(null, "Jane", "Doe", "JaneDoe", "pwd", "jane.doe@example.com");
+        User user1 = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
+        User user2 = new User(null, "Jane", "Doe", "JaneDoe", "pwd", "jane.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
         userRepository.save(user1);
         userRepository.save(user2);
 
@@ -69,7 +71,7 @@ public class UserControllerTest {
     @Test
     void getUserById_WhenUserExists_ShouldReturnUser() throws Exception {
         // Arrange
-        User user = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
+        User user = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now() ,LocalDateTime.now());
         User savedUser = userRepository.save(user);
 
         // Act & Assert
@@ -85,7 +87,7 @@ public class UserControllerTest {
     @Test
     void createUser_WithValidData_ShouldCreateUser() throws Exception {
         // Arrange
-        User user = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
+        User user = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
         //userRepository.save(user);
         // Act & Assert
         mockMvc.perform(post("/api/users")
@@ -101,10 +103,10 @@ public class UserControllerTest {
     @Test
     void createUser_WithDuplicateEmail_ShouldReturnError() throws Exception {
         // Arrange
-        User existingUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
+        User existingUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
         userRepository.save(existingUser);
 
-        User newUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
+        User newUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
 
         // Act & Assert
         mockMvc.perform(post("/api/users")
@@ -116,8 +118,8 @@ public class UserControllerTest {
 
     @Test
     void createUser_withNameAndEmail_ShouldCreateUser() throws Exception {
-        User user1 = new User(null, null, null, "johndoe", null, "john.doe@example.com");
-        User user2 = new User(null, null, null, "abc", null, "abc@example.com");
+        User user1 = new User(null, null, null, "johndoe", "pwd", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
+        User user2 = new User(null, null, null, "abc", "pwd2", "abc@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
 
 
         mockMvc.perform(post("/api/users")
@@ -133,7 +135,7 @@ public class UserControllerTest {
 
     @Test
     void updateUser_WithValidData_ShouldUpdateUser() throws Exception {
-        User existingUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
+        User existingUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
         userRepository.save(existingUser);
 
         User updatedUser = new User();
@@ -150,7 +152,7 @@ public class UserControllerTest {
 
     @Test
     void deleteUser_shouldDeleteUser() throws Exception {
-        User user = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com");
+        User user = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
         User savedUser = userRepository.save(user);
         mockMvc.perform(delete("/api/users/" + savedUser.getId()))
                 .andExpect(status().isNoContent());

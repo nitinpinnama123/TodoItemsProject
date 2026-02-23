@@ -8,7 +8,7 @@ import { TodoItem, TodoItemStatus, TodoItemRequest} from '../models/todoItem.mod
     providedIn: 'root'
     })
 export class TodoItemService {
-    private apiUrl = `${environment.apiUrl}/TodoItems`;
+    private apiUrl = `${environment.apiUrl}/items`;
     constructor(private http: HttpClient) {}
 
     getAllTodoItems(userId?: number, status?: TodoItemStatus): Observable<TodoItem[]> {

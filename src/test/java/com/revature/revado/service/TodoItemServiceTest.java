@@ -48,8 +48,8 @@ public class TodoItemServiceTest {
     void setUp() {
         todoItemRepository.deleteAll();
         userRepository.deleteAll();
-        testUser = userRepository.save(new User(null, "John", "Doe", "pwd", "johndoe", "john.doe@example.com"));
-        testUser2 = userRepository.save(new User(null, "Jane", "Doe", "janedoe", "pwd", "jane.doe@example.com"));
+        testUser = userRepository.save(new User(null, "John", "Doe", "pwd", "johndoe", "john.doe@example.com", User.Role.USER, null, null));
+        testUser2 = userRepository.save(new User(null, "Jane", "Doe", "janedoe", "pwd", "jane.doe@example.com", User.Role.USER, null, null));
 
     }
 

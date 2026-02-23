@@ -1,8 +1,8 @@
 <div class="container">
   <div class="header">
-    <h2>Tasks</h2>
+    <h2>Todo Items</h2>
     <button class="btn btn-primary" (click)="createTask()">
-      <i class="icon-plus"></i> Create Task
+      <i class="icon-plus"></i> Create Todo Item
     </button>
   </div>
 
@@ -28,7 +28,7 @@
   </div>
 
   <div *ngIf="loading" class="loading">
-    Loading tasks...
+    Loading todo items...
   </div>
 
   <div *ngIf="error" class="alert alert-error">
@@ -36,7 +36,7 @@
   </div>
 
   <div *ngIf="!loading && tasks.length === 0" class="empty-state">
-    <p>No tasks found. Create your first task!</p>
+    <p>No todo items found. Create your first todo item!</p>
   </div>
 
   <div *ngIf="!loading && tasks.length > 0" class="task-grid">
