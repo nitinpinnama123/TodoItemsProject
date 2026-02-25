@@ -24,14 +24,14 @@ public class SubtaskService {
 
 
     @Transactional
-    public List<Subtask> getTodoSubtasks(Long todoId, Long userId) {
+    public List<Subtask> getTodoSubtasks(Long todoId) {
         // Verify user owns the todo
         todoService.getTodoItemById(todoId);
         return subtaskRepository.findByTodoId(todoId);
     }
 
     @Transactional
-    public Subtask getSubtaskById(Long subtaskId, Long todoId, Long userId) {
+    public Subtask getSubtaskById(Long subtaskId, Long todoId) {
         // Verify user owns the todo
         todoService.getTodoItemById(todoId);
 
@@ -40,7 +40,7 @@ public class SubtaskService {
     }
 
     @Transactional
-    public Subtask createSubtask(Long todoId, SubtaskRequest request, Long userId) {
+    public Subtask createSubtask(Long todoId, SubtaskRequest request) {
         TodoItem todo = todoService.getTodoItemById(todoId);
 
         Subtask subtask = new Subtask();
@@ -52,8 +52,8 @@ public class SubtaskService {
     }
 
     @Transactional
-    public Subtask updateSubtask(Long subtaskId, Long todoId, SubtaskRequest request, Long userId) {
-        Subtask subtask = getSubtaskById(subtaskId, todoId, userId);
+    public Subtask updateSubtask(Long subtaskId, Long todoId, SubtaskRequest request) {
+        Subtask subtask = getSubtaskById(subtaskId, todoId);
 
         if (request.getTitle() != null) {
             subtask.setTitle(request.getTitle());
@@ -66,15 +66,15 @@ public class SubtaskService {
     }
 
     @Transactional
-    public Subtask toggleSubtaskComplete(Long subtaskId, Long todoId, Long userId) {
-        Subtask subtask = getSubtaskById(subtaskId, todoId, userId);
+    public Subtask toggleSubtaskComplete(Long subtaskId, Long todoId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoId);
         subtask.setCompleted(!subtask.isCompleted());
         return subtaskRepository.save(subtask);
     }
 
     @Transactional
-    public void deleteSubtask(Long subtaskId, Long todoId, Long userId) {
-        Subtask subtask = getSubtaskById(subtaskId, todoId, userId);
+    public void deleteSubtask(Long subtaskId, Long todoId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoId);
         subtaskRepository.delete(subtask);
     }
 }
