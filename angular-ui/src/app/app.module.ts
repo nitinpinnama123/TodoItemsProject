@@ -7,8 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
-import { TaskListComponent } from './components/task-list/task-list.component';
-import { TaskFormComponent } from './components/task-form/task-form.component';
 import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.component';
 import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
 import { RouterModule } from '@angular/router';
@@ -18,8 +16,6 @@ import { RouterModule } from '@angular/router';
     AppComponent,
     UserListComponent,
     UserFormComponent,
-    TaskListComponent,
-    TaskFormComponent,
     TodoItemListComponent,
     TodoItemFormComponent
   ],

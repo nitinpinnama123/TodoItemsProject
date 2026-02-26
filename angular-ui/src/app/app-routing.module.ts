@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
-import { TaskListComponent } from './components/task-list/task-list.component';
-import { TaskFormComponent } from './components/task-form/task-form.component';
 import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.component';
 import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
 
@@ -13,10 +11,6 @@ const routes: Routes = [
   { path: 'users/new', component: UserFormComponent },
   { path: 'users/:id', component: UserFormComponent },
   { path: 'users/:id/edit', component: UserFormComponent },
-  { path: 'tasks', component: TaskListComponent },
-  { path: 'tasks/new', component: TaskFormComponent },
-  { path: 'tasks/:id', component: TaskFormComponent },
-  { path: 'tasks/:id/edit', component: TaskFormComponent },
 
   { path: 'items', component: TodoItemListComponent },
   { path: 'items/new', component: TodoItemFormComponent },
