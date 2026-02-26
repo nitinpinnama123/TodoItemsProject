@@ -19,7 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/items/{todo_id}/subtasks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class SubtaskController {
     private final SubtaskService subtaskService;
 

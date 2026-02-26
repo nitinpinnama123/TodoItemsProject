@@ -28,7 +28,8 @@ export class UserFormComponent implements OnInit {
         lName: [''],
       username: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      role: ['', [Validators.required]]
     });
   }
 
@@ -49,7 +50,8 @@ export class UserFormComponent implements OnInit {
           fName: user.fName,
           lName: user.lName,
           username: user.username,
-          email: user.email
+          email: user.email,
+          role: user.role
         });
         this.loading = false;
       },

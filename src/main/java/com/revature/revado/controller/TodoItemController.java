@@ -20,7 +20,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class TodoItemController {
     private final TodoItemService todoItemService;
 
@@ -30,14 +32,14 @@ public class TodoItemController {
         return todoItemService.createTodoItem(todoItemRequest);
     }
 
-    @DeleteMapping
-    public void deleteTodoItem(@RequestBody TodoItem todoItem){
-        todoItemService.deleteTodoItem(todoItem.getId());
+    @DeleteMapping("/{id}")
+    public void deleteTodoItem(@PathVariable("id") Long id){
+        todoItemService.deleteTodoItem(id);
     }
 
-    @PatchMapping
-    public void updateTodoItem(@RequestBody TodoItem todoItem) {
-        todoItemService.updateTodoItem(todoItem.getId(), todoItem);
+    @PatchMapping("/{id}")
+    public void updateTodoItem(@PathVariable("id") Long id, @RequestBody TodoItem todoItem) {
+        todoItemService.updateTodoItem(id, todoItem);
     }
 
     @GetMapping
