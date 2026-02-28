@@ -5,6 +5,7 @@ import com.revature.revado.entity.TodoItem;
 import com.revature.revado.entity.User;
 import com.revature.revado.service.TodoItemService;
 import com.revature.revado.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:4200",
         allowedHeaders = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+
+@Transactional
 public class TodoItemController {
     private final TodoItemService todoItemService;
 
@@ -37,9 +40,10 @@ public class TodoItemController {
         todoItemService.deleteTodoItem(id);
     }
 
-    @PatchMapping("/{id}")
-    public void updateTodoItem(@PathVariable("id") Long id, @RequestBody TodoItem todoItem) {
-        todoItemService.updateTodoItem(id, todoItem);
+    @PutMapping("/{id}")
+    public ResponseEntity<TodoItem> updateTodoItem(@PathVariable("id") Long id,
+                                                   @RequestBody TodoItemRequest todoItemRequest) {
+       return ResponseEntity.ok(todoItemService.updateTodoItem(id, todoItemRequest));
     }
 
     @GetMapping

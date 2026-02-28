@@ -36,7 +36,7 @@ public class TodoItem {
     @JoinColumn(name = "created_by_id", referencedColumnName = "id")
     private User createdBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to", referencedColumnName = "id")
     private User assignedTo;
 

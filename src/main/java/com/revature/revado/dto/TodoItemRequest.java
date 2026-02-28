@@ -1,5 +1,6 @@
 package com.revature.revado.dto;
 
+import com.revature.revado.entity.TodoItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class TodoItemRequest {
     private String title;
     private String description;
-    private String status;
+    private TodoItem.ItemStatus status;
     private Long createdById;
     private Long assignedToId;
 }

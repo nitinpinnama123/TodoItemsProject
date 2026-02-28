@@ -4,6 +4,8 @@ import com.revature.revado.entity.TodoItem;
 import com.revature.revado.dto.TodoItemRequest;
 import com.revature.revado.entity.User;
 import com.revature.revado.repository.TodoRepository;
+import com.revature.revado.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class TodoItemService {
     private final TodoRepository todoRepo;
     private final UserService userService;
+    private final UserRepository userRepo;
 
     public TodoItem createTodoItem(TodoItemRequest todoItemRequest) {
         TodoItem todoItem = new TodoItem();
@@ -26,7 +29,7 @@ public class TodoItemService {
         todoItem.setDescription(todoItemRequest.getDescription());
         if (todoItemRequest.getStatus() != null)
         {
-            todoItem.setStatus(TodoItem.ItemStatus.valueOf(todoItemRequest.getStatus()));
+            todoItem.setStatus(TodoItem.ItemStatus.valueOf(String.valueOf(todoItemRequest.getStatus())));
         }
         else {
             todoItem.setStatus(TodoItem.ItemStatus.PENDING);
@@ -56,14 +59,21 @@ public class TodoItemService {
         }
     }
 
-    public TodoItem updateTodoItem(Long id, TodoItem updatedItem)
+    @Transactional
+    public TodoItem updateTodoItem(Long id, TodoItemRequest request)
     {
         TodoItem existingItem = todoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
-        existingItem.setTitle(updatedItem.getTitle());
-        existingItem.setDescription(updatedItem.getDescription());
-        existingItem.setStatus(updatedItem.getStatus());
-        existingItem.setAssignedTo(updatedItem.getAssignedTo());
+        existingItem.setTitle(request.getTitle());
+        existingItem.setDescription(request.getDescription());
+        existingItem.setStatus(request.getStatus());
+        if (request.getAssignedToId() != null) {
+            User user = userRepo.findById(request.getAssignedToId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            existingItem.setAssignedTo(user);
+        }
+        //existingItem.setAssignedTo(updatedItem.getAssignedTo());
         return todoRepo.save(existingItem);
     }
 

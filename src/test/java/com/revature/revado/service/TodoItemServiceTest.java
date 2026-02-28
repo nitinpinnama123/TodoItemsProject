@@ -55,8 +55,8 @@ public class TodoItemServiceTest {
 
     @Test
     void getAllTasks_ShouldReturnAllTasks() {
-        TodoItemRequest todoItem1 = new TodoItemRequest("Task 1", "Description 1", "PENDING", testUser.getId(), testUser.getId());
-        TodoItemRequest todoItem2 = new TodoItemRequest("Task 2", "Description 2", "IN_PROGRESS", testUser.getId(), testUser.getId());
+        TodoItemRequest todoItem1 = new TodoItemRequest("Task 1", "Description 1", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
+        TodoItemRequest todoItem2 = new TodoItemRequest("Task 2", "Description 2", TodoItem.ItemStatus.IN_PROGRESS, testUser.getId(), testUser.getId());
         todoItemService.createTodoItem(todoItem1);
         todoItemService.createTodoItem(todoItem2);
 
@@ -66,7 +66,7 @@ public class TodoItemServiceTest {
 
     @Test
     void getTaskById_WhenTaskExists_ShouldReturnTask() {
-        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", "PENDING", testUser.getId(), testUser.getId());
+        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
         TodoItem createdTask = todoItemService.createTodoItem(taskRequest);
 
         TodoItem result = todoItemService.getTodoItemById(createdTask.getId());
@@ -86,10 +86,10 @@ public class TodoItemServiceTest {
 
     @Test
     void getTasksByUserId_ShouldReturnUserTasks() {
-        TodoItemRequest task1 = new TodoItemRequest("Task 1", "Description 1", "PENDING", testUser.getId(), testUser.getId());
+        TodoItemRequest task1 = new TodoItemRequest("Task 1", "Description 1", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
         todoItemService.createTodoItem(task1);
 
-        TodoItemRequest task2 = new TodoItemRequest("Task 2", "Description 2", "PENDING", testUser2.getId(), testUser2.getId());
+        TodoItemRequest task2 = new TodoItemRequest("Task 2", "Description 2", TodoItem.ItemStatus.PENDING, testUser2.getId(), testUser2.getId());
         todoItemService.createTodoItem(task2);
 
         TodoItem result = todoItemService.getTodoItemById(testUser2.getId());
@@ -99,9 +99,9 @@ public class TodoItemServiceTest {
     @Test
     void getTasksByStatus_ShouldReturnTasksWithStatus() {
         // Arrange
-        TodoItemRequest task1 = new TodoItemRequest("Task 1", "Description 1", "PENDING", testUser.getId(), testUser.getId());
-        TodoItemRequest task2 = new TodoItemRequest("Task 2", "Description 2", "PENDING", testUser2.getId(), testUser2.getId());
-        TodoItemRequest task3 = new TodoItemRequest("Task 3", "Description 3", "IN_PROGRESS", testUser.getId(), testUser2.getId());
+        TodoItemRequest task1 = new TodoItemRequest("Task 1", "Description 1", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
+        TodoItemRequest task2 = new TodoItemRequest("Task 2", "Description 2", TodoItem.ItemStatus.PENDING, testUser2.getId(), testUser2.getId());
+        TodoItemRequest task3 = new TodoItemRequest("Task 3", "Description 3", TodoItem.ItemStatus.IN_PROGRESS, testUser.getId(), testUser2.getId());
         /*TaskRequest task2 = new TaskRequest("Task 2", "Description 2", "IN_PROGRESS", testUser.getId());
         TaskRequest task3 = new TaskRequest("Task 3", "Description 3", "PENDING", testUser.getId());*/
         todoItemService.createTodoItem(task1);
@@ -120,7 +120,7 @@ public class TodoItemServiceTest {
 
     @Test
     void createTask_WithoutAssignedUser_ShouldCreateTask() {
-        TodoItemRequest taskRequest = new TodoItemRequest("New Task", "New Description", "PENDING", testUser.getId(), null);
+        TodoItemRequest taskRequest = new TodoItemRequest("New Task", "New Description", TodoItem.ItemStatus.PENDING, testUser.getId(), null);
 
         TodoItem result = todoItemService.createTodoItem(taskRequest);
 
@@ -145,7 +145,7 @@ public class TodoItemServiceTest {
     @Test
     void createTask_WithInvalidUserId_ShouldThrowException() {
         // Arrange
-        TodoItemRequest taskRequest = new TodoItemRequest("New Task", "New Description", "PENDING", 999L, 999L);
+        TodoItemRequest taskRequest = new TodoItemRequest("New Task", "New Description", TodoItem.ItemStatus.PENDING, 999L, 999L);
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> todoItemService.createTodoItem(taskRequest));
@@ -154,13 +154,13 @@ public class TodoItemServiceTest {
     @Test
     void updateTask_WhenTaskExists_ShouldUpdateTask() {
         // Arrange
-        TodoItemRequest taskRequest = new TodoItemRequest("Original Task", "Original Description", "PENDING", testUser.getId(), testUser.getId());
+        TodoItemRequest taskRequest = new TodoItemRequest("Original Task", "Original Description", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
         TodoItem createdTask = todoItemService.createTodoItem(taskRequest);
 
-        TodoItemRequest taskRequest2 = new TodoItemRequest("Updated Task", "Updated Description", "IN_PROGRESS", testUser.getId(), testUser.getId());
-        TodoItem updatedTask = todoItemService.createTodoItem(taskRequest2);
+        TodoItemRequest taskRequest2 = new TodoItemRequest("Updated Task", "Updated Description", TodoItem.ItemStatus.IN_PROGRESS, testUser.getId(), testUser.getId());
+        //TodoItem updatedTask = todoItemService.createTodoItem(taskRequest2);
 
-        TodoItem result = todoItemService.updateTodoItem(createdTask.getId(), updatedTask);
+        TodoItem result = todoItemService.updateTodoItem(createdTask.getId(), taskRequest2);
 
         assertNotNull(result);
         assertEquals("Updated Task", result.getTitle());
@@ -174,7 +174,7 @@ public class TodoItemServiceTest {
 
     @Test
     void updateTask_WhenTaskDoesNotExist_ShouldThrowException() {
-        TodoItem updateData = new TodoItem();
+        TodoItemRequest updateData = new TodoItemRequest();
         updateData.setTitle("Updated Task");
 
         assertThrows(RuntimeException.class,
@@ -185,7 +185,7 @@ public class TodoItemServiceTest {
 
     @Test
     void updateTaskStatus_ShouldUpdateStatus() {
-        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", "PENDING", testUser.getId(), testUser.getId());
+        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
         TodoItem createdTask = todoItemService.createTodoItem(taskRequest);
 
         createdTask.setStatus(TodoItem.ItemStatus.COMPLETED);
@@ -196,7 +196,7 @@ public class TodoItemServiceTest {
     @Test
     void deleteTask_WhenTaskExists_ShouldDeleteTask() {
         // Arrange
-        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", "PENDING", testUser.getId(), testUser.getId());
+        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", TodoItem.ItemStatus.PENDING, testUser.getId(), testUser.getId());
         TodoItem createdTask = todoItemService.createTodoItem(taskRequest);
         Long taskId = createdTask.getId();
 
@@ -215,21 +215,18 @@ public class TodoItemServiceTest {
 
     @Test
     void workflowTest_CreateAssignUpdateComplete() {
-        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", "PENDING", testUser.getId(), null);
+        TodoItemRequest taskRequest = new TodoItemRequest("Test Task", "Test Description", TodoItem.ItemStatus.PENDING, testUser.getId(), null);
         TodoItem task = todoItemService.createTodoItem(taskRequest);
 
-        TodoItemRequest taskRequest2 = new TodoItemRequest("Test Task", "Test Description", "IN_PROGRESS", testUser.getId(), null);
+        TodoItemRequest taskRequest2 = new TodoItemRequest("Test Task", "Test Description", TodoItem.ItemStatus.IN_PROGRESS, testUser.getId(), null);
 
-        TodoItem updatedTask = todoItemService.createTodoItem(taskRequest2);
-        todoItemService.updateTodoItem(task.getId(), updatedTask);
-        assertEquals(TodoItem.ItemStatus.IN_PROGRESS, task.getStatus());
+        TodoItem updatedItem = todoItemService.updateTodoItem(task.getId(), taskRequest2);
+        assertEquals(TodoItem.ItemStatus.IN_PROGRESS, updatedItem.getStatus());
 
-        TodoItemRequest taskRequest3 = new TodoItemRequest("Test Task", "Test Description", "COMPLETED", testUser.getId(), null);
+        TodoItemRequest taskRequest3 = new TodoItemRequest("Test Task", "Test Description", TodoItem.ItemStatus.COMPLETED, testUser.getId(), null);
 
-        TodoItem updatedTask3 = todoItemService.createTodoItem(taskRequest3);
-        todoItemService.updateTodoItem(task.getId(), updatedTask3);
-
-        assertEquals(TodoItem.ItemStatus.COMPLETED, task.getStatus());
+        TodoItem updatedItem3 = todoItemService.updateTodoItem(task.getId(), taskRequest3);
+        assertEquals(TodoItem.ItemStatus.COMPLETED, updatedItem3.getStatus());
 
 
 
