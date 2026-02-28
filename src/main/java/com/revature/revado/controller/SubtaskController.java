@@ -38,7 +38,7 @@ public class SubtaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Subtask> createSubtask(Long todoId, SubtaskRequest request) {
+    public ResponseEntity<Subtask> createSubtask(@PathVariable Long todoId, @RequestBody SubtaskRequest request) {
         Subtask subtask = subtaskService.createSubtask(todoId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(subtask);
     }
