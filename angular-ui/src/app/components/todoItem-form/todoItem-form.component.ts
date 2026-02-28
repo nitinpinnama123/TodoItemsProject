@@ -100,6 +100,7 @@ export class TodoItemFormComponent implements OnInit {
         id: this.todoItemId,
         title: formValue.title,
         description: formValue.description,
+        assignedTo: formValue.assignedToId,
         createdBy: formValue.createdBy,
         status: formValue.status
       };

@@ -110,8 +110,9 @@ export class TodoItemListComponent implements OnInit {
 
   updateStatus(todoItemId: number, newStatus: TodoItemStatus): void {
     this.todoItemService.updateTodoItemStatus(todoItemId, newStatus).subscribe({
-      next: () => {
+      next: (updatedTodo) => {
         this.loadTodoItems();
+
       },
       error: (err) => {
         this.error = 'Failed to update todoItem status';

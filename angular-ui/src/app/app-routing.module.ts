@@ -6,7 +6,7 @@ import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.
 import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/tasks', pathMatch: 'full' },
+  { path: '', redirectTo: '/items', pathMatch: 'full' },
   { path: 'users', component: UserListComponent },
   { path: 'users/new', component: UserFormComponent },
   { path: 'users/:id', component: UserFormComponent },
@@ -16,7 +16,8 @@ const routes: Routes = [
   { path: 'items/new', component: TodoItemFormComponent },
   { path: 'items/:id', component: TodoItemFormComponent },
   { path: 'items/:id/edit', component: TodoItemFormComponent },
-  { path: '**', redirectTo: '/items' }
+  { path: '**', redirectTo: '/items' },
+
 ];
 
 @NgModule({

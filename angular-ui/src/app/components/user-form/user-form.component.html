@@ -57,15 +57,15 @@
         <label for="role">Role *</label>
         <input
                 id="role"
-                type="role"
+                type="text"
                 formControlName="role"
                 class="form-control"
                 [class.is-invalid]="submitted && f['role'].errors"
                 placeholder="Enter role"
         />
         <div *ngIf="submitted && f['role'].errors" class="invalid-feedback">
-          <div *ngIf="f['role'].errors['required']">Name is required</div>
-          <div *ngIf="f['role'].errors['minlength']">Name must be at least 2 characters</div>
+          <div *ngIf="f['role'].errors['required']">Role is required</div>
+          <div *ngIf="f['role'].errors['minlength']">Role must be at least 2 characters</div>
         </div>
       </div>
 
