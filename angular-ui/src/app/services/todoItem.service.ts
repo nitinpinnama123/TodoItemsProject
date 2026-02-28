@@ -41,8 +41,8 @@ export class TodoItemService {
         return this.http.post<TodoItem>(this.apiUrl, todoItemRequest);
       }
 
-      updateTodoItem(id: number, todoItem: TodoItem): Observable<TodoItem> {
-        return this.http.put<TodoItem>(`${this.apiUrl}/${id}`, todoItem);
+      updateTodoItem(id: number, todoItemRequest: TodoItemRequest): Observable<TodoItemRequest> {
+        return this.http.put<TodoItemRequest>(`${this.apiUrl}/${id}`, todoItemRequest);
       }
 
       assignTodoItemToUser(todoItemId: number, userId: number): Observable<TodoItem> {

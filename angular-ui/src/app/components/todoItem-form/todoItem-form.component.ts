@@ -96,16 +96,14 @@ export class TodoItemFormComponent implements OnInit {
 
     if (this.isEditMode) {
       // For update, send TodoItem object
-      const todoItem: TodoItem = {
-        id: this.todoItemId,
+      const todoItemRequest: TodoItemRequest = {
         title: formValue.title,
         description: formValue.description,
-        assignedTo: formValue.assignedToId,
-        createdBy: formValue.createdBy,
+        assignedToId: formValue.assignedToId,
         status: formValue.status
       };
 
-      this.todoItemService.updateTodoItem(this.todoItemId!, todoItem).subscribe({
+      this.todoItemService.updateTodoItem(this.todoItemId!, todoItemRequest).subscribe({
         next: () => {
           // If assignment changed, update it separately
           this.router.navigate(['/todoItems']);

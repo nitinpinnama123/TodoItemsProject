@@ -73,6 +73,9 @@ public class TodoItemService {
 
             existingItem.setAssignedTo(user);
         }
+        else {
+            existingItem.setAssignedTo(null);
+        }
         //existingItem.setAssignedTo(updatedItem.getAssignedTo());
         return todoRepo.save(existingItem);
     }

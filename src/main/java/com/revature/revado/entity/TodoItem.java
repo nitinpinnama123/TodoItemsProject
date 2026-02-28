@@ -57,6 +57,9 @@ public class TodoItem {
         updatedAt = LocalDateTime.now();
     }
 
+    public void setAssin() {
+    }
+
     public enum ItemStatus {
         PENDING,
         IN_PROGRESS,
