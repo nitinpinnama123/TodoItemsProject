@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +47,8 @@ public class SubtaskService {
         Subtask subtask = new Subtask();
         subtask.setTitle(request.getTitle());
         subtask.setCompleted(request.getCompleted() != null ? request.getCompleted() : false);
+        subtask.setCreatedAt(LocalDateTime.now());
+        subtask.setUpdatedAt(LocalDateTime.now());
         subtask.setTodo(todo);
 
         return subtaskRepository.save(subtask);

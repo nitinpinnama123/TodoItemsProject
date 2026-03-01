@@ -10,6 +10,7 @@ target/
 
 
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -47,3 +48,4 @@ build/
 target/
 # Local database file
 demo-db.sqlite
+data/todoitem-db.trace.db

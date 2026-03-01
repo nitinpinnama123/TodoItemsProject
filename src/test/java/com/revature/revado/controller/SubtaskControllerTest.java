@@ -3,8 +3,10 @@ package com.revature.revado.controller;
 import com.revature.revado.dto.SubtaskRequest;
 import com.revature.revado.entity.Subtask;
 import com.revature.revado.entity.TodoItem;
+import com.revature.revado.entity.User;
 import com.revature.revado.repository.SubtaskRepository;
 import com.revature.revado.repository.TodoRepository;
+import com.revature.revado.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +16,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -30,10 +37,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  **/
 @SpringBootTest
 @Transactional
+@AutoConfigureMockMvc
 class SubtaskControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private SubtaskController subtaskController;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private TodoRepository todoRepository;
@@ -41,122 +57,129 @@ class SubtaskControllerTest {
     @Autowired
     private SubtaskRepository subtaskRepository;
 
-    private TodoItem createTodo() {
-        TodoItem todo = new TodoItem();
-        todo.setTitle("Test Todo");
-        return todoRepository.save(todo);
-    }
+    @Test
+    public void test_createSubtask() throws Exception {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-    private Subtask createSubtask(TodoItem todo) {
-        Subtask subtask = new Subtask();
-        subtask.setTitle("Test Subtask");
-        subtask.setCompleted(false);
-        subtask.setTodo(todo);
-        return subtaskRepository.save(subtask);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
+
+        //Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        //Subtask savedSubtask = subtaskRepository.save(subtask);
+
+        SubtaskRequest request = new SubtaskRequest("Subtask 2", false);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/items/" + savedTask1.getId() + "/subtasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", is("Subtask 2")));
+        //.andExpect(MockMvcResultMatchers.jsonPath("$.lName", is("Doe")))
+        //.andExpect(MockMvcResultMatchers.jsonPath("$.email", is("john.doe@example.com")));
     }
 
 
     @Test
-    void getAllSubtasks_ShouldReturnList() {
+    void getAllSubtasks_ShouldReturnList() throws Exception {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        TodoItem todo = createTodo();
-        createSubtask(todo);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        ResponseEntity<List<Subtask>> response =
-                subtaskController.getTodoItemSubtasks(todo.getId());
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(1, response.getBody().size());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/items/" + savedTask1.getId() + "/subtasks"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title", is("Subtask 1")));
+
     }
 
     @Test
-    void getSubtaskById_ShouldReturnSubtask() {
+    void getSubtaskById_ShouldReturnSubtask() throws Exception {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        TodoItem todo = createTodo();
-        Subtask subtask = createSubtask(todo);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        ResponseEntity<Subtask> response =
-                subtaskController.getSubtaskById(todo.getId(), subtask.getId());
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(subtask.getTitle(), response.getBody().getTitle());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/items/" + savedTask1.getId() + "/subtasks/" + savedSubtask.getId()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("title", is("Subtask 1")));
+
     }
 
-    @Test
-    void createSubtask_ShouldCreateSubtask() {
-
-        TodoItem todo = createTodo();
-
-        SubtaskRequest request = new SubtaskRequest();
-        request.setTitle("New Subtask");
-        request.setCompleted(false);
-
-        ResponseEntity<Subtask> response =
-                subtaskController.createSubtask(todo.getId(), request);
-
-        assertEquals(201, response.getStatusCode().value());
-        assertNotNull(response.getBody().getId());
-    }
 
     // --------------------------
     // UPDATE
     // --------------------------
     @Test
-    void updateSubtask_ShouldUpdateSubtask() {
+    void updateSubtask_ShouldUpdateSubtask() throws Exception {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        TodoItem todo = createTodo();
-        Subtask subtask = createSubtask(todo);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
+
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
         SubtaskRequest request = new SubtaskRequest();
         request.setTitle("Updated Title");
         request.setCompleted(true);
 
-        ResponseEntity<Subtask> response =
-                subtaskController.updateSubtask(
-                        todo.getId(),
-                        subtask.getId(),
-                        request
-                );
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/items/" + savedTask1.getId() + "/subtasks/" + savedSubtask.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("title", is("Updated Title")));
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Updated Title", response.getBody().getTitle());
     }
+
 
     // --------------------------
     // TOGGLE
     // --------------------------
     @Test
-    void toggleSubtask_ShouldToggleCompletion() {
+    void toggleSubtask_ShouldToggleCompletion() throws Exception {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        TodoItem todo = createTodo();
-        Subtask subtask = createSubtask(todo);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        ResponseEntity<Subtask> response =
-                subtaskController.toggleSubtaskComplete(
-                        todo.getId(),
-                        subtask.getId()
-                );
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        assertEquals(200, response.getStatusCode().value());
-        assertTrue(response.getBody().isCompleted());
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/items/" + savedTask1.getId() + "/subtasks/" + savedSubtask.getId()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("completed", is(true)));
     }
 
     @Test
-    void deleteSubtask_ShouldDeleteSubtask() {
+    void deleteSubtask_ShouldDeleteSubtask() throws Exception {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        TodoItem todo = createTodo();
-        Subtask subtask = createSubtask(todo);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        ResponseEntity<Void> response =
-                subtaskController.deleteSubtask(
-                        todo.getId(),
-                        subtask.getId()
-                );
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        assertEquals(204, response.getStatusCode().value());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/items/" + savedTask1.getId() + "/subtasks/" + savedSubtask.getId()))
+                .andExpect(status().isNoContent());
 
-        assertFalse(
-                subtaskRepository.findById(subtask.getId()).isPresent()
-        );
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/items/" + savedTask1.getId() + "/subtasks/" + savedSubtask.getId()))
+                .andExpect(status().isNotFound());
     }
+
+
 }

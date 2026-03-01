@@ -3,20 +3,22 @@ package com.revature.revado.repository;
 import com.revature.revado.entity.Subtask;
 import com.revature.revado.entity.TodoItem;
 import com.revature.revado.entity.User;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author $ {USER}
  **/
 @SpringBootTest
+@Transactional
 public class SubtaskRepoTest {
     @Autowired
     private SubtaskRepository subtaskRepository;
@@ -32,294 +34,136 @@ public class SubtaskRepoTest {
     private Subtask subtask2;
 
     @Test
-    void findById_WhenSubtaskExists_ReturnsSubtask() {
-        User user1 = new User();
-        user1.setFName("John");
-        user1.setLName("Doe");
-        user1.setUsername("john-doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setPassword("pwd");
-
-        User user2 = new User();
-        user2.setFName("Jane");
-        user2.setLName("Smith");
-        user2.setUsername("jane-smith");
-        user2.setEmail("jane.smith@example.com");
-        user2.setPassword("pwd2");
-
+    void createSubtask_AndVerifyTimesUpdated() {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
-        user2 = userRepository.save(user2);
 
-        TodoItem todoItem1 = new TodoItem();
-        todoItem1.setTitle("Task 1");
-        todoItem1.setDescription("Description 1");
-        todoItem1.setStatus(TodoItem.ItemStatus.PENDING);
-        todoItem1.setAssignedTo(user1);
-
-        TodoItem todoItem2 = new TodoItem();
-        todoItem2.setTitle("Task 2");
-        todoItem2.setDescription("Description 2");
-        todoItem2.setStatus(TodoItem.ItemStatus.IN_PROGRESS);
-        todoItem2.setAssignedTo(user2);
-
-
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
-        TodoItem savedTask2 = todoRepository.save(todoItem2);
 
-        Subtask subtask1 = new Subtask();
-        subtask1.setTitle("Subtask 1");
-        subtask1.setTodo(todoItem1);
-        subtask1.setCompleted(false);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        Subtask savedSubtask1 = subtaskRepository.save(subtask1);
+        assertEquals("Subtask 1", savedSubtask.getTitle());
+        assertNotNull(savedSubtask.getCreatedAt());
+        assertNotNull(savedSubtask.getUpdatedAt());
 
-        assertEquals("Task 1", savedSubtask1.getTodo().getTitle());
+    }
+
+    @Test
+    void findById_WhenSubtaskExists_ReturnsSubtask() {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
+
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
+
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
+
+        Optional<Subtask> subtaskFound = subtaskRepository.findById(savedSubtask.getId());
+        assertTrue(subtaskFound.isPresent());
+        assertEquals(1L, subtaskFound.get().getId());
     }
 
     @Test
     void findAll_ShouldReturnAllSubtasks() {
-        User user1 = new User();
-        user1.setFName("John");
-        user1.setLName("Doe");
-        user1.setUsername("john-doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setPassword("pwd");
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        User user2 = new User();
-        user2.setFName("Jane");
-        user2.setLName("Smith");
-        user2.setUsername("jane-smith");
-        user2.setEmail("jane.smith@example.com");
-        user2.setPassword("pwd2");
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        userRepository.save(user1);
-        userRepository.save(user2);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        TodoItem todoItem1 = new TodoItem();
-        todoItem1.setTitle("Task 1");
-        todoItem1.setDescription("Description 1");
-        todoItem1.setStatus(TodoItem.ItemStatus.PENDING);
-        todoItem1.setAssignedTo(user1);
-
-        TodoItem todoItem2 = new TodoItem();
-        todoItem2.setTitle("Task 2");
-        todoItem2.setDescription("Description 2");
-        todoItem2.setStatus(TodoItem.ItemStatus.IN_PROGRESS);
-        todoItem2.setAssignedTo(user2);
-
-        todoRepository.save(todoItem1);
-        todoRepository.save(todoItem2);
-
-        Subtask subtask1 = new Subtask();
-        subtask1.setTitle("Subtask 1");
-        subtask1.setTodo(todoItem1);
-        subtask1.setCompleted(false);
-
-        Subtask subtask2 = new Subtask();
-        subtask2.setTitle("Subtask 2");
-        subtask2.setTodo(todoItem1);
-        subtask2.setCompleted(false);
-
-        Subtask subtask1_todo2 = new Subtask();
-        subtask1_todo2.setTitle("Subtask1_Todo2");
-        subtask1_todo2.setTodo(todoItem2);
-        subtask1_todo2.setCompleted(false);
-
-        Subtask subtask2_todo2 = new Subtask();
-        subtask2_todo2.setTitle("Substask2_Todo2");
-        subtask2_todo2.setTodo(todoItem2);
-        subtask2_todo2.setCompleted(false);
-
-        subtaskRepository.save(subtask1);
-        subtaskRepository.save(subtask2);
-        subtaskRepository.save(subtask1_todo2);
-        subtaskRepository.save(subtask2_todo2);
+        Subtask subtask2 = new Subtask(null, "Subtask 2", false, savedTask1, null, null);
+        Subtask savedSubtask2 = subtaskRepository.save(subtask2);
 
         List<Subtask> subtasks = subtaskRepository.findAll();
 
-        assertEquals(4, subtasks.size());
+        assertEquals(2, subtasks.size());
     }
 
     @Test
     void findByTodoId_ShouldReturnSubtasks() {
-        User user1 = new User();
-        user1.setFName("John");
-        user1.setLName("Doe");
-        user1.setUsername("john-doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setPassword("pwd");
 
-        User user2 = new User();
-        user2.setFName("Jane");
-        user2.setLName("Smith");
-        user2.setUsername("jane-smith");
-        user2.setEmail("jane.smith@example.com");
-        user2.setPassword("pwd2");
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        userRepository.save(user1);
-        userRepository.save(user2);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        TodoItem todoItem1 = new TodoItem();
-        todoItem1.setTitle("Task 1");
-        todoItem1.setDescription("Description 1");
-        todoItem1.setStatus(TodoItem.ItemStatus.PENDING);
-        todoItem1.setAssignedTo(user1);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        TodoItem todoItem2 = new TodoItem();
-        todoItem2.setTitle("Task 2");
-        todoItem2.setDescription("Description 2");
-        todoItem2.setStatus(TodoItem.ItemStatus.IN_PROGRESS);
-        todoItem2.setAssignedTo(user2);
-
-        todoRepository.save(todoItem1);
-        todoRepository.save(todoItem2);
-
-        Subtask subtask1 = new Subtask();
-        subtask1.setTitle("Subtask 1");
-        subtask1.setTodo(todoItem1);
-        subtask1.setCompleted(false);
-
-        Subtask subtask2 = new Subtask();
-        subtask2.setTitle("Subtask 2");
-        subtask2.setTodo(todoItem1);
-        subtask2.setCompleted(false);
-
-        Subtask subtask1_todo2 = new Subtask();
-        subtask1_todo2.setTitle("Subtask1_Todo2");
-        subtask1_todo2.setTodo(todoItem2);
-        subtask1_todo2.setCompleted(false);
-
-        Subtask subtask2_todo2 = new Subtask();
-        subtask2_todo2.setTitle("Substask2_Todo2");
-        subtask2_todo2.setTodo(todoItem2);
-        subtask2_todo2.setCompleted(false);
-
-        subtaskRepository.save(subtask1);
-        subtaskRepository.save(subtask2);
-        subtaskRepository.save(subtask1_todo2);
-        subtaskRepository.save(subtask2_todo2);
+        Subtask subtask2 = new Subtask(null, "Subtask 2", false, savedTask1, null, null);
+        Subtask savedSubtask2 = subtaskRepository.save(subtask2);
 
 
-        List<Subtask> subtasksByTodoItem = subtaskRepository.findByTodoId(todoItem2.getId());
+        List<Subtask> subtasksByTodoItem = subtaskRepository.findByTodoId(savedTask1.getId());
         assertEquals(2, subtasksByTodoItem.size());
-        assertTrue(subtasksByTodoItem.stream().allMatch(t -> t.getTodo().getId().equals(todoItem2.getId())));
+        assertTrue(subtasksByTodoItem.stream().allMatch(t -> t.getTodo().getId().equals(savedTask1.getId())));
     }
 
     @Test
     void findByIdAndTodoId_ShouldReturnTasksWithIdAndTodoId()
     {
-        User user1 = new User();
-        user1.setFName("John");
-        user1.setLName("Doe");
-        user1.setUsername("john-doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setPassword("pwd");
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        User user2 = new User();
-        user2.setFName("Jane");
-        user2.setLName("Smith");
-        user2.setUsername("jane-smith");
-        user2.setEmail("jane.smith@example.com");
-        user2.setPassword("pwd2");
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        userRepository.save(user1);
-        userRepository.save(user2);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        TodoItem todoItem1 = new TodoItem();
-        todoItem1.setTitle("Task 1");
-        todoItem1.setDescription("Description 1");
-        todoItem1.setStatus(TodoItem.ItemStatus.PENDING);
-        todoItem1.setAssignedTo(user1);
+        Subtask subtask2 = new Subtask(null, "Subtask 2", false, savedTask1, null, null);
+        Subtask savedSubtask2 = subtaskRepository.save(subtask2);
 
-        TodoItem todoItem2 = new TodoItem();
-        todoItem2.setTitle("Task 2");
-        todoItem2.setDescription("Description 2");
-        todoItem2.setStatus(TodoItem.ItemStatus.IN_PROGRESS);
-        todoItem2.setAssignedTo(user2);
-
-        todoRepository.save(todoItem1);
-        todoRepository.save(todoItem2);
-
-        Subtask subtask1 = new Subtask();
-        subtask1.setTitle("Subtask 1");
-        subtask1.setTodo(todoItem1);
-        subtask1.setCompleted(false);
-
-        Subtask subtask2 = new Subtask();
-        subtask2.setTitle("Subtask 2");
-        subtask2.setTodo(todoItem1);
-        subtask2.setCompleted(false);
-
-        Subtask subtask1_todo2 = new Subtask();
-        subtask1_todo2.setTitle("Subtask1_Todo2");
-        subtask1_todo2.setTodo(todoItem2);
-        subtask1_todo2.setCompleted(false);
-
-        Subtask subtask2_todo2 = new Subtask();
-        subtask2_todo2.setTitle("Subtask2_Todo2");
-        subtask2_todo2.setTodo(todoItem2);
-        subtask2_todo2.setCompleted(false);
-
-        subtaskRepository.save(subtask1);
-        subtaskRepository.save(subtask2);
-        subtaskRepository.save(subtask1_todo2);
-        subtaskRepository.save(subtask2_todo2);
-
-        Optional<Subtask> subtaskByIdAndTodoId = subtaskRepository.findByIdAndTodoId(subtask2_todo2.getId(), todoItem2.getId());
+        Optional<Subtask> subtaskByIdAndTodoId = subtaskRepository.findByIdAndTodoId(savedSubtask2.getId(), savedTask1.getId());
         assertTrue(subtaskByIdAndTodoId.isPresent());
-        assertEquals("Subtask2_Todo2", subtaskByIdAndTodoId.get().getTitle());
+        assertEquals("Subtask 2", subtaskByIdAndTodoId.get().getTitle());
     }
 
     @Test
     void updateSubtask_ShouldModifySubtask() {
 
-        User user1 = new User();
-        user1.setFName("John");
-        user1.setLName("Doe");
-        user1.setUsername("john-doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setPassword("pwd");
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        User user2 = new User();
-        user2.setFName("Jane");
-        user2.setLName("Smith");
-        user2.setUsername("jane-smith");
-        user2.setEmail("jane.smith@example.com");
-        user2.setPassword("pwd2");
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
 
-        userRepository.save(user1);
-        userRepository.save(user2);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        TodoItem todoItem1 = new TodoItem();
-        todoItem1.setTitle("Task 1");
-        todoItem1.setDescription("Description 1");
-        todoItem1.setStatus(TodoItem.ItemStatus.PENDING);
-        todoItem1.setAssignedTo(user1);
-
-        TodoItem todoItem2 = new TodoItem();
-        todoItem2.setTitle("Task 2");
-        todoItem2.setDescription("Description 2");
-        todoItem2.setStatus(TodoItem.ItemStatus.IN_PROGRESS);
-        todoItem2.setAssignedTo(user2);
-
-        todoRepository.save(todoItem1);
-        todoRepository.save(todoItem2);
-        Subtask subtask1 = new Subtask();
-        subtask1.setTitle("Subtask 1");
-        subtask1.setTodo(todoItem1);
-        subtask1.setCompleted(false);
-
-        Subtask savedSubtask = subtaskRepository.save(subtask1);
-        Long subtaskId = savedSubtask.getId();
 
         savedSubtask.setTitle("Updated subtask");
         savedSubtask.setCompleted(true);
         subtaskRepository.save(savedSubtask);
 
-        Optional<Subtask> updatedSubtask = subtaskRepository.findById(subtaskId);
+        Optional<Subtask> updatedSubtask = subtaskRepository.findById(savedSubtask.getId());
         assertTrue(updatedSubtask.isPresent());
         assertEquals("Updated subtask", updatedSubtask.get().getTitle());
         assertEquals(true, updatedSubtask.get().isCompleted());
 
+    }
+
+    @Test
+    void deleteSubtask_ShouldRemoveSubtask() {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
+
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoRepository.save(todoItem1);
+
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
+
+
+        subtaskRepository.deleteById(savedSubtask.getId());
+        Optional<Subtask> deletedSubtask = subtaskRepository.findById(savedSubtask.getId());
+        assertFalse(deletedSubtask.isPresent());
     }
 }

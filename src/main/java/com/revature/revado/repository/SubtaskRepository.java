@@ -18,5 +18,5 @@ public interface SubtaskRepository extends JpaRepository<Subtask, Long> {
 
     Optional<Subtask> findByIdAndTodoId(Long id, Long todoId);
 
-    void deleteByIdAndTodoId(Long id, Long todoId);
+    void deleteById(Long id);
 }

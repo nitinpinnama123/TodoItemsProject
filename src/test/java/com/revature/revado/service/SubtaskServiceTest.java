@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class SubtaskServiceTest {
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private SubtaskService subtaskService;
     @Autowired
     private SubtaskRepository subtaskRepository;
@@ -34,24 +36,19 @@ public class SubtaskServiceTest {
 
     @Test
     void findAll_ShouldReturnAllSubtasks() {
-       TodoItem todoItem = new TodoItem();
-       todoItem.setTitle("Test Todo");
-       todoItemRepository.save(todoItem);
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-       Subtask sub1 = new Subtask();
-       sub1.setTitle("Subtask1");
-       sub1.setCompleted(false);
-       sub1.setTodo(todoItem);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
-        Subtask sub2 = new Subtask();
-        sub2.setTitle("Subtask 2");
-        sub2.setCompleted(true);
-        sub2.setTodo(todoItem);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
-        subtaskRepository.save(sub1);
-        subtaskRepository.save(sub2);
+        Subtask subtask2 = new Subtask(null, "Subtask 2", false, savedTask1, null, null);
+        Subtask savedSubtask2 = subtaskRepository.save(subtask2);
 
-        List<Subtask> subtasks = subtaskService.getTodoSubtasks(todoItem.getId());
+        List<Subtask> subtasks = subtaskService.getTodoSubtasks(savedTask1.getId());
         assertEquals(2, subtasks.size());
         assertEquals("Subtask 2", subtasks.get(1).getTitle());
 
@@ -60,42 +57,42 @@ public class SubtaskServiceTest {
 
     @Test
     void createSubtask_ShouldSaveSubtask() {
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        TodoItem todo = new TodoItem();
-        todo.setTitle("Create Test Todo");
-        todo = todoItemRepository.save(todo);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
-        SubtaskRequest request = new SubtaskRequest();
-        request.setTitle("New Subtask");
-        request.setCompleted(true);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
+
+        //Subtask subtask2 = new Subtask(null, "Subtask 2", false, savedTask1, null, null);
+        SubtaskRequest request = new SubtaskRequest("Subtask 2", false);
 
         Subtask result =
-                subtaskService.createSubtask(todo.getId(), request);
+                subtaskService.createSubtask(savedTask1.getId(), request);
 
         assertNotNull(result.getId());
-        assertEquals("New Subtask", result.getTitle());
-        assertTrue(result.isCompleted());
+        assertEquals("Subtask 2", result.getTitle());
+        assertFalse(result.isCompleted());
     }
 
     @Test
     void updateSubtask_ShouldUpdateFields() {
 
-        TodoItem todo = new TodoItem();
-        todo.setTitle("Update Test Todo");
-        todo = todoItemRepository.save(todo);
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        Subtask subtask = new Subtask();
-        subtask.setTitle("Old Title");
-        subtask.setCompleted(false);
-        subtask.setTodo(todo);
-        subtask = subtaskRepository.save(subtask);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
-        SubtaskRequest request = new SubtaskRequest();
-        request.setTitle("Updated Title");
-        request.setCompleted(true);
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
+
+        SubtaskRequest request = new SubtaskRequest("Updated Title", true);
 
         Subtask updated =
-                subtaskService.updateSubtask(subtask.getId(), todo.getId(), request);
+                subtaskService.updateSubtask(savedSubtask.getId(), savedTask1.getId(), request);
 
         assertEquals("Updated Title", updated.getTitle());
         assertTrue(updated.isCompleted());
@@ -104,38 +101,37 @@ public class SubtaskServiceTest {
     @Test
     void toggleSubtaskComplete_ShouldFlipCompletionStatus() {
 
-        TodoItem todo = new TodoItem();
-        todo.setTitle("Toggle Test Todo");
-        todo = todoItemRepository.save(todo);
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        Subtask subtask = new Subtask();
-        subtask.setTitle("Toggle Subtask");
-        subtask.setCompleted(false);
-        subtask.setTodo(todo);
-        subtask = subtaskRepository.save(subtask);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoItemRepository.save(todoItem1);
+
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
 
         Subtask toggled =
-                subtaskService.toggleSubtaskComplete(subtask.getId(), todo.getId());
+                subtaskService.toggleSubtaskComplete(savedSubtask.getId(), savedTask1.getId());
 
         assertTrue(toggled.isCompleted());
     }
 
     @Test
     void deleteSubtask_ShouldRemoveSubtask() {
-        TodoItem todo = new TodoItem();
-        todo.setTitle("Delete Test Todo");
-        todoItemRepository.save(todo);
 
-        Subtask subtask = new Subtask();
-        subtask.setTitle("Delete Me");
-        subtask.setCompleted(false);
-        subtask.setTodo(todo);
-        subtask = subtaskRepository.save(subtask);
+        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        user1 = userRepository.save(user1);
 
-        subtaskService.deleteSubtask(subtask.getId(), todo.getId());
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem savedTask1 = todoItemRepository.save(todoItem1);
+
+        Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
+        Subtask savedSubtask = subtaskRepository.save(subtask);
+
+        subtaskService.deleteSubtask(savedSubtask.getId(), savedTask1.getId());
 
         boolean exists =
-                subtaskRepository.findById(subtask.getId()).isPresent();
+                subtaskRepository.findById(savedSubtask.getId()).isPresent();
 
         assertFalse(exists);
     }

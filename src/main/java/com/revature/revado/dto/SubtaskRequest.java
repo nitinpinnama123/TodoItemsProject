@@ -1,5 +1,6 @@
 package com.revature.revado.dto;
 
+import com.revature.revado.entity.TodoItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

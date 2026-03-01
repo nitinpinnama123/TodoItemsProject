@@ -26,37 +26,37 @@ public class SubtaskController {
     private final SubtaskService subtaskService;
 
     @GetMapping
-    public ResponseEntity<List<Subtask>> getTodoItemSubtasks(@PathVariable Long todoId) {
+    public ResponseEntity<List<Subtask>> getTodoItemSubtasks(@PathVariable("todo_id") Long todoId) {
         List<Subtask> subtasks = subtaskService.getTodoSubtasks(todoId);
         return ResponseEntity.ok(subtasks);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Subtask> getSubtaskById(@PathVariable Long todoId, @PathVariable Long subtaskId) {
+    public ResponseEntity<Subtask> getSubtaskById(@PathVariable("todo_id") Long todoId, @PathVariable("id") Long subtaskId) {
         Subtask subtask = subtaskService.getSubtaskById(subtaskId, todoId);
         return ResponseEntity.ok(subtask);
     }
 
     @PostMapping
-    public ResponseEntity<Subtask> createSubtask(@PathVariable Long todoId, @RequestBody SubtaskRequest request) {
+    public ResponseEntity<Subtask> createSubtask(@PathVariable("todo_id") Long todoId, @RequestBody SubtaskRequest request) {
         Subtask subtask = subtaskService.createSubtask(todoId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(subtask);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Subtask> updateSubtask(@PathVariable Long todoId, @PathVariable Long subtaskId, SubtaskRequest request) {
+    public ResponseEntity<Subtask> updateSubtask(@PathVariable("todo_id") Long todoId, @PathVariable("id") Long subtaskId, @RequestBody SubtaskRequest request) {
         Subtask subtask = subtaskService.updateSubtask(subtaskId, todoId, request);
         return ResponseEntity.ok(subtask);
     }
 
-    @PatchMapping
-    public ResponseEntity<Subtask> toggleSubtaskComplete(@PathVariable Long subtaskId, @PathVariable Long todoId) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Subtask> toggleSubtaskComplete(@PathVariable("todo_id") Long todoId, @PathVariable("id") Long subtaskId) {
         Subtask subtask = subtaskService.toggleSubtaskComplete(subtaskId, todoId);
         return ResponseEntity.ok(subtask);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSubtask(@PathVariable Long todoId, @PathVariable Long subtaskId) {
+    public ResponseEntity<Void> deleteSubtask(@PathVariable("todo_id") Long todoId, @PathVariable("id") Long subtaskId) {
         subtaskService.deleteSubtask(subtaskId, todoId);
         return ResponseEntity.noContent().build();
     }
