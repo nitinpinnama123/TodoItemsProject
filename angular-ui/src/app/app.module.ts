@@ -11,6 +11,8 @@ import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.
 import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
 import { RouterModule } from '@angular/router';
 
+// Services are provided in root via @Injectable({ providedIn: 'root' })
+// No need to add them here
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,9 +25,9 @@ import { RouterModule } from '@angular/router';
     BrowserModule,
     RouterModule,
     AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule
+    HttpClientModule, // For API calls
+    FormsModule, // For ngModel (template-driven forms)
+    ReactiveFormsModule // For reactive forms
   ],
   providers: [],
   bootstrap: [AppComponent]

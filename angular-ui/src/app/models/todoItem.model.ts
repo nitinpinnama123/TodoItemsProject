@@ -14,6 +14,7 @@ export interface TodoItem {
     status: TodoItemStatus;
     createdBy: User;
     assignedTo?: User;
+    subtasks?: Subtask[];
     createdAt?: string;
     updatedAt?: string;
 }
@@ -23,4 +24,17 @@ export interface TodoItemRequest {
   description?: string;
   status: string;
   assignedToId?: number;
+}
+
+export interface Subtask {
+  id?: number;
+  title: string;
+  completed: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface SubtaskRequest {
+  title: string;
+  completed?: boolean;
 }

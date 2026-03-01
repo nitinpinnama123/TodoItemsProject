@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TodoItem, TodoItemStatus, TodoItemRequest} from '../models/todoItem.model';
@@ -10,6 +10,12 @@ import { TodoItem, TodoItemStatus, TodoItemRequest} from '../models/todoItem.mod
 export class TodoItemService {
     private apiUrl = `${environment.apiUrl}/items`;
     constructor(private http: HttpClient) {}
+
+    private getHeaders(): HttpHeaders {
+        return new HttpHeaders({
+          'Content-Type': 'application/json'
+        });
+    }
 
     getAllTodoItems(userId?: number, status?: TodoItemStatus): Observable<TodoItem[]> {
         let params = new HttpParams();
@@ -44,6 +50,12 @@ export class TodoItemService {
       updateTodoItem(id: number, todoItemRequest: TodoItemRequest): Observable<TodoItemRequest> {
         return this.http.put<TodoItemRequest>(`${this.apiUrl}/${id}`, todoItemRequest);
       }
+
+      toggleTodoItemComplete(id: number): Observable<TodoItem> {
+        return this.http.patch<TodoItem>(`${this.apiUrl}/${id}/toggle`, {}, {
+        headers: this.getHeaders()
+      });
+     }
 
       assignTodoItemToUser(todoItemId: number, userId: number): Observable<TodoItem> {
         return this.http.patch<TodoItem>(`${this.apiUrl}/${todoItemId}/assign/${userId}`, {});

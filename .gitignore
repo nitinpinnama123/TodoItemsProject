@@ -49,3 +49,4 @@ target/
 # Local database file
 demo-db.sqlite
 data/todoitem-db.trace.db
+data/todoitem-db.mv.db
