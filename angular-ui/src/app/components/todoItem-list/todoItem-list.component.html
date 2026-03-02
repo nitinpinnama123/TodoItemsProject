@@ -46,6 +46,16 @@
         <span class="status-badge" [ngClass]="getStatusClass(todoItem.status)">
           {{ todoItem.status }}
         </span>
+
+        <div class="todoItem-actions">
+          <button class="btn-icon" (click)="editTodoItem(todoItem.id!)" title="Edit">
+            ✏️
+          </button>
+          <button class="btn-icon" (click)="deleteTodoItem(todoItem.id!)" title="Delete">
+            🗑️
+          </button>
+        </div>
+
       </div>
 
       <p class="todoItem-description">{{ todoItem.description || 'No description' }}</p>
@@ -59,7 +69,96 @@
           <small>Created: {{ todoItem.createdAt | date:'short' }}</small>
         </div>
       </div>
+      <!-- Task Complete Checkbox -->
+      <div class="task-complete-section">
+        <label class="checkbox-container">
+          <input
+                  type="checkbox"
+                  [checked]="todoItem.status === 'COMPLETED'"
+                  (change)="toggleTodoItemStatus(todoItem.id!)"
+          />
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Mark as Complete</span>
+        </label>
+      </div>
 
+      <!-- ============ SUBTASKS SECTION ============ -->
+      <div class="subtasks-section" *ngIf="todoItem.subtasks && todoItem.subtasks.length > 0">
+
+        <!-- Subtasks Header with Toggle -->
+        <div class="subtasks-header" (click)="toggleTodoItemExpanded(todoItem.id!)">
+          <div class="subtasks-title">
+            <span class="toggle-icon">{{ isTodoItemExpanded(todoItem.id!) ? '▼' : '▶' }}</span>
+            <span>Subtasks ({{ todoItem.subtasks.length }})</span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="progress-info">
+            <span class="progress-text">
+              {{ getSubtaskProgress(todoItem).completed }}/{{ getSubtaskProgress(todoItem).total }}
+            </span>
+            <div class="progress-bar-mini">
+              <div
+                      class="progress-fill"
+                      [style.width.%]="getSubtaskProgress(todoItem).percentage"
+                      [class.complete]="areAllSubtasksComplete(todoItem)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subtasks-list" *ngIf="isTodoItemExpanded(todoItem.id!)">
+          <div *ngFor="let subtask of todoItem.subtasks" class="subtask-item">
+
+            <!-- Subtask Checkbox -->
+            <label class="subtask-checkbox-container">
+              <input
+                      type="checkbox"
+                      [checked]="subtask.completed"
+                      (change)="toggleSubtask(todoItem.id!, subtask.id!)"
+              />
+              <span class="subtask-checkmark"></span>
+            </label>
+
+            <!-- Subtask Title -->
+            <span
+                    class="subtask-title"
+                    [class.completed]="subtask.completed">
+              {{ subtask.title }}
+            </span>
+
+            <!-- Delete Subtask -->
+            <button
+                    class="btn-icon-sm"
+                    (click)="deleteSubtask(todoItem.id!, subtask.id!)"
+                    title="Delete subtask">
+              &times;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Subtask Input -->
+      <div class="add-subtask-section">
+        <div class="add-subtask-input-group">
+          <input
+                  type="text"
+                  [(ngModel)]="newSubtaskTitles[todoItem.id!]"
+                  (keyup.enter)="addSubtask(todoItem.id!)"
+                  class="add-subtask-input"
+                  placeholder="+ Add subtask"
+          />
+          <button
+                  *ngIf="newSubtaskTitles[todoItem.id!]?.trim()"
+                  class="btn btn-sm btn-primary"
+                  (click)="addSubtask(todoItem.id!)">
+            Add
+          </button>
+        </div>
+      </div>
+
+
+      <!--
       <div class="todoItem-actions">
         <select 
           class="status-select" 
@@ -78,6 +177,7 @@
           Delete
         </button>
       </div>
+      -->
     </div>
   </div>
 </div>
