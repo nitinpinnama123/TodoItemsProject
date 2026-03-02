@@ -31,7 +31,7 @@ public class Subtask {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", nullable = false)
     @JsonIgnore
-    private TodoItem todo;
+    private TodoItem todoItem;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

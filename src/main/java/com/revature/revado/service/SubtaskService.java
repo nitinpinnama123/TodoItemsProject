@@ -25,38 +25,38 @@ public class SubtaskService {
 
 
     @Transactional
-    public List<Subtask> getTodoSubtasks(Long todoId) {
+    public List<Subtask> getTodoSubtasks(Long todoItemId) {
         // Verify user owns the todo
-        todoService.getTodoItemById(todoId);
-        return subtaskRepository.findByTodoId(todoId);
+        todoService.getTodoItemById(todoItemId);
+        return subtaskRepository.findByTodoItemId(todoItemId);
     }
 
     @Transactional
-    public Subtask getSubtaskById(Long subtaskId, Long todoId) {
+    public Subtask getSubtaskById(Long subtaskId, Long todoItemId) {
         // Verify user owns the todo
-        todoService.getTodoItemById(todoId);
+        todoService.getTodoItemById(todoItemId);
 
-        return subtaskRepository.findByIdAndTodoId(subtaskId, todoId)
+        return subtaskRepository.findByIdAndTodoItemId(subtaskId, todoItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Subtask not found with id: " + subtaskId));
     }
 
     @Transactional
-    public Subtask createSubtask(Long todoId, SubtaskRequest request) {
-        TodoItem todo = todoService.getTodoItemById(todoId);
+    public Subtask createSubtask(Long todoItemId, SubtaskRequest request) {
+        TodoItem todo = todoService.getTodoItemById(todoItemId);
 
         Subtask subtask = new Subtask();
         subtask.setTitle(request.getTitle());
         subtask.setCompleted(request.getCompleted() != null ? request.getCompleted() : false);
         subtask.setCreatedAt(LocalDateTime.now());
         subtask.setUpdatedAt(LocalDateTime.now());
-        subtask.setTodo(todo);
+        subtask.setTodoItem(todo);
 
         return subtaskRepository.save(subtask);
     }
 
     @Transactional
-    public Subtask updateSubtask(Long subtaskId, Long todoId, SubtaskRequest request) {
-        Subtask subtask = getSubtaskById(subtaskId, todoId);
+    public Subtask updateSubtask(Long subtaskId, Long todoItemId, SubtaskRequest request) {
+        Subtask subtask = getSubtaskById(subtaskId, todoItemId);
 
         if (request.getTitle() != null) {
             subtask.setTitle(request.getTitle());
@@ -69,15 +69,15 @@ public class SubtaskService {
     }
 
     @Transactional
-    public Subtask toggleSubtaskComplete(Long subtaskId, Long todoId) {
-        Subtask subtask = getSubtaskById(subtaskId, todoId);
+    public Subtask toggleSubtaskComplete(Long subtaskId, Long todoItemId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoItemId);
         subtask.setCompleted(!subtask.isCompleted());
         return subtaskRepository.save(subtask);
     }
 
     @Transactional
-    public void deleteSubtask(Long subtaskId, Long todoId) {
-        Subtask subtask = getSubtaskById(subtaskId, todoId);
+    public void deleteSubtask(Long subtaskId, Long todoItemId) {
+        Subtask subtask = getSubtaskById(subtaskId, todoItemId);
         subtaskRepository.delete(subtask);
     }
 }

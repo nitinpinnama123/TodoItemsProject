@@ -14,9 +14,9 @@ import java.util.UUID;
 @Repository
 public interface SubtaskRepository extends JpaRepository<Subtask, Long> {
 
-    List<Subtask> findByTodoId(Long todoId);
+    List<Subtask> findByTodoItemId(Long todoItemId);
 
-    Optional<Subtask> findByIdAndTodoId(Long id, Long todoId);
+    Optional<Subtask> findByIdAndTodoItemId(Long id, Long todoItemId);
 
     void deleteById(Long id);
 }

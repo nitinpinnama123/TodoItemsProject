@@ -38,7 +38,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -55,7 +55,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -71,7 +71,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -91,7 +91,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -101,9 +101,9 @@ public class SubtaskRepoTest {
         Subtask savedSubtask2 = subtaskRepository.save(subtask2);
 
 
-        List<Subtask> subtasksByTodoItem = subtaskRepository.findByTodoId(savedTask1.getId());
+        List<Subtask> subtasksByTodoItem = subtaskRepository.findByTodoItemId(savedTask1.getId());
         assertEquals(2, subtasksByTodoItem.size());
-        assertTrue(subtasksByTodoItem.stream().allMatch(t -> t.getTodo().getId().equals(savedTask1.getId())));
+        assertTrue(subtasksByTodoItem.stream().allMatch(t -> t.getTodoItem().getId().equals(savedTask1.getId())));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1",  TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -121,7 +121,7 @@ public class SubtaskRepoTest {
         Subtask subtask2 = new Subtask(null, "Subtask 2", false, savedTask1, null, null);
         Subtask savedSubtask2 = subtaskRepository.save(subtask2);
 
-        Optional<Subtask> subtaskByIdAndTodoId = subtaskRepository.findByIdAndTodoId(savedSubtask2.getId(), savedTask1.getId());
+        Optional<Subtask> subtaskByIdAndTodoId = subtaskRepository.findByIdAndTodoItemId(savedSubtask2.getId(), savedTask1.getId());
         assertTrue(subtaskByIdAndTodoId.isPresent());
         assertEquals("Subtask 2", subtaskByIdAndTodoId.get().getTitle());
     }
@@ -132,7 +132,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -155,7 +155,7 @@ public class SubtaskRepoTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);

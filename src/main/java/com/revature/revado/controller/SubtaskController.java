@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200",
         allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE})
 public class SubtaskController {
     private final SubtaskService subtaskService;
 
@@ -49,7 +49,7 @@ public class SubtaskController {
         return ResponseEntity.ok(subtask);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/toggle")
     public ResponseEntity<Subtask> toggleSubtaskComplete(@PathVariable("todo_id") Long todoId, @PathVariable("id") Long subtaskId) {
         Subtask subtask = subtaskService.toggleSubtaskComplete(subtaskId, todoId);
         return ResponseEntity.ok(subtask);

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,7 +32,16 @@ public class TodoItem {
 
     @Column(length = 1000)
     private String description;
+
     private ItemStatus status = ItemStatus.PENDING;
+
+    @OneToMany(
+            mappedBy = "todoItem",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Subtask> subtasks = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "created_by_id", referencedColumnName = "id")
@@ -57,8 +68,15 @@ public class TodoItem {
         updatedAt = LocalDateTime.now();
     }
 
-    public void setAssin() {
 
+    public void addSubtask(Subtask subtask) {
+        subtasks.add(subtask);
+        subtask.setTodoItem(this);
+    }
+
+    public void removeSubtask(Subtask subtask) {
+        subtasks.remove(subtask);
+        subtask.setTodoItem(null);
     }
 
     public enum ItemStatus {

@@ -1,6 +1,7 @@
 package com.revature.revado.controller;
 
 import com.revature.revado.dto.TodoItemRequest;
+import com.revature.revado.entity.Subtask;
 import com.revature.revado.entity.TodoItem;
 import com.revature.revado.entity.User;
 import com.revature.revado.service.TodoItemService;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200",
         allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE})
 
 @Transactional
 public class TodoItemController {
@@ -46,6 +47,11 @@ public class TodoItemController {
        return ResponseEntity.ok(todoItemService.updateTodoItem(id, todoItemRequest));
     }
 
+    @PatchMapping("/{id}/toggle")
+    public ResponseEntity<TodoItem> toggleTodoItemComplete(@PathVariable("id") Long todoItemId) {
+        TodoItem todoItem = todoItemService.toggleTodoItemComplete(todoItemId);
+        return ResponseEntity.ok(todoItem);
+    }
     @GetMapping
     public List<TodoItem> getAllTodoItems() {
         return todoItemService.getAllTodos();

@@ -1,8 +1,10 @@
 package com.revature.revado.service;
 
+import com.revature.revado.entity.Subtask;
 import com.revature.revado.entity.TodoItem;
 import com.revature.revado.dto.TodoItemRequest;
 import com.revature.revado.entity.User;
+import com.revature.revado.exception.ResourceNotFoundException;
 import com.revature.revado.repository.TodoRepository;
 import com.revature.revado.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -53,9 +55,11 @@ public class TodoItemService {
     {
         Optional<TodoItem> possibleTodoItem = todoRepo.findById(id);
         if (possibleTodoItem.isPresent()) {
-            return possibleTodoItem.get();
+            TodoItem t1 = possibleTodoItem.get();
+            List<Subtask> subtasks = t1.getSubtasks();
+            return t1;
         } else {
-            return new TodoItem();
+            throw new ResourceNotFoundException("Todo Item not found with id: " + id);
         }
     }
 
@@ -79,6 +83,14 @@ public class TodoItemService {
         //existingItem.setAssignedTo(updatedItem.getAssignedTo());
         return todoRepo.save(existingItem);
     }
+
+    @Transactional
+    public TodoItem toggleTodoItemComplete(Long todoItemId) {
+        TodoItem todoItem = getTodoItemById(todoItemId);
+        todoItem.setStatus(TodoItem.ItemStatus.COMPLETED);
+        return todoRepo.save(todoItem);
+    }
+
 
     public void deleteTodoItem(Long todoId)
     {
