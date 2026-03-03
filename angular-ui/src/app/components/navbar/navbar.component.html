@@ -1,0 +1,18 @@
+<nav class="navbar">
+    <div class="nav-brand">
+        <h1>{{ title }}</h1>
+    </div>
+    <ul class="nav-menu">
+        <li>
+            <a routerLink="/items" routerLinkActive="active">Items</a>
+        </li>
+        <li>
+            <a routerLink="/users" routerLinkActive="active">Users</a>
+        </li>
+
+    </ul>
+    <div class="nav-right" *ngIf="currentUser$ | async as user">
+        <span>Welcome, {{ user.name }}</span>
+        <button (click)="logout()">Logout</button>
+    </div>
+</nav>

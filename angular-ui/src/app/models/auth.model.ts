@@ -1,11 +1,11 @@
-export interface User {
+/*export interface User {
   userId: number;
   username: string;
   name: string;
   email: string;
   role: string;
   token: string;
-}
+}*/
 
 export interface LoginRequest {
   username: string;

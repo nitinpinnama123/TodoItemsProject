@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppNavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { UserListComponent } from './components/user-list/user-list.component';
@@ -18,6 +19,7 @@ import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
+    AppNavbarComponent,
     LoginComponent,
     RegisterComponent,
     UserListComponent,

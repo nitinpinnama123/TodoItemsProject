@@ -6,6 +6,7 @@ import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.
 import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   // ===== PUBLIC ROUTES - NO GUARD =====
@@ -17,12 +18,12 @@ const routes: Routes = [
   { path: 'users/:id', component: UserFormComponent },
   { path: 'users/:id/edit', component: UserFormComponent },
 
-  { path: 'items', component: TodoItemListComponent },
-  { path: 'items/new', component: TodoItemFormComponent },
-  { path: 'items/:id', component: TodoItemFormComponent },
-  { path: 'items/:id/edit', component: TodoItemFormComponent },
+  { path: 'items', component: TodoItemListComponent, canActivate: [AuthGuard] },
+  { path: 'items/new', component: TodoItemFormComponent, canActivate: [AuthGuard] },
+  { path: 'items/:id', component: TodoItemFormComponent, canActivate: [AuthGuard] },
+  { path: 'items/:id/edit', component: TodoItemFormComponent, canActivate: [AuthGuard] },
   // Default paths
-  { path: '', redirectTo: '/items', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/items' }
 
 
