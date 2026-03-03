@@ -10,7 +10,14 @@
       <li>
         <a routerLink="/users" routerLinkActive="active">Users</a>
       </li>
+
     </ul>
+    <!--
+    <div class="nav-right" *ngIf="currentUser$ | async as user">
+      <span>Welcome, {{ user.fName }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+    -->
   </nav>
 
   <main class="main-content">

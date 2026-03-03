@@ -4,9 +4,14 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { TodoItemListComponent } from './components/todoItem-list/todoItem-list.component';
 import { TodoItemFormComponent } from './components/todoItem-form/todoItem-form.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/items', pathMatch: 'full' },
+  // ===== PUBLIC ROUTES - NO GUARD =====
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  // Protected paths
   { path: 'users', component: UserListComponent },
   { path: 'users/new', component: UserFormComponent },
   { path: 'users/:id', component: UserFormComponent },
@@ -16,7 +21,10 @@ const routes: Routes = [
   { path: 'items/new', component: TodoItemFormComponent },
   { path: 'items/:id', component: TodoItemFormComponent },
   { path: 'items/:id/edit', component: TodoItemFormComponent },
-  { path: '**', redirectTo: '/items' },
+  // Default paths
+  { path: '', redirectTo: '/items', pathMatch: 'full' },
+  { path: '**', redirectTo: '/items' }
+
 
 ];
 
