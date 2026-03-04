@@ -53,8 +53,18 @@ public class TodoItemController {
         return ResponseEntity.ok(todoItem);
     }
     @GetMapping
-    public List<TodoItem> getAllTodoItems() {
-        return todoItemService.getAllTodos();
+    public List<TodoItem> getAllTodoItems(@RequestParam(required = false) Long userId,
+                                          @RequestParam(required = false) TodoItem.ItemStatus status) {
+
+        if (userId != null && status != null) {
+            return todoItemService.getAllTodosByUserIdAndStatus(userId, status);
+        } else if (userId != null) {
+            return todoItemService.getAllTodosByUserId(userId);
+        } else if (status != null) {
+            return todoItemService.getAllTodosByStatus(status);
+        } else {
+            return todoItemService.getAllTodos();
+        }
     }
 
     @GetMapping("/{id}")

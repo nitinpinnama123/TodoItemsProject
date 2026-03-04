@@ -17,9 +17,12 @@ public interface TodoRepository extends JpaRepository<TodoItem, UUID> {
 
     List<TodoItem> findByStatus(TodoItem.ItemStatus status);
 
+    List<TodoItem> findByAssignedToIdAndStatus(Long userId, TodoItem.ItemStatus status);
+
     Optional<TodoItem> findById(Long id);
 
     boolean existsById(Long todoId);
 
     void deleteById(Long todoId);
+
 }

@@ -7,7 +7,8 @@ import com.revature.revado.entity.User;
 import com.revature.revado.exception.ResourceNotFoundException;
 import com.revature.revado.repository.TodoRepository;
 import com.revature.revado.repository.UserRepository;
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,10 +48,51 @@ public class TodoItemService {
         return todoRepo.save(todoItem);
     }
 
+    /**
+     * Get all tasks (no filtering)
+     */
+    @Transactional(readOnly = true)
     public List<TodoItem> getAllTodos() {
+
         return todoRepo.findAll();
     }
 
+    /**
+     * Get tasks filtered by user ID
+     */
+    @Transactional(readOnly = true)
+    public List<TodoItem> getAllTodosByUserId(Long userId) {
+        // Verify user exists
+        if (!userRepo.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
+        return todoRepo.findByAssignedToId(userId);
+    }
+
+    /**
+     * Get tasks filtered by status
+     */
+    @Transactional(readOnly = true)
+    public List<TodoItem> getAllTodosByStatus(TodoItem.ItemStatus status) {
+        return todoRepo.findByStatus(status);
+    }
+
+    /**
+     * Get tasks filtered by both user ID and status
+     */
+    @Transactional(readOnly = true)
+    public List<TodoItem> getAllTodosByUserIdAndStatus(Long userId, TodoItem.ItemStatus status) {
+        // Verify user exists
+        if (!userRepo.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
+        return todoRepo.findByAssignedToIdAndStatus(userId, status);
+    }
+
+    /**
+     * Get task by ID
+     */
+    @Transactional(readOnly = true)
     public TodoItem getTodoItemById(Long id)
     {
         Optional<TodoItem> possibleTodoItem = todoRepo.findById(id);

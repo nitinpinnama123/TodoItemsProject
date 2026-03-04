@@ -71,7 +71,7 @@ public class TodoItemControllerTest {
         request.setTitle("Task 1 Title");
         todoItemController.createTodoItem(request);
 
-        List<TodoItem> items = todoItemController.getAllTodoItems();
+        List<TodoItem> items = todoItemController.getAllTodoItems(null, null);
 
         assertFalse(items.isEmpty());
         assertEquals(1, items.size());
