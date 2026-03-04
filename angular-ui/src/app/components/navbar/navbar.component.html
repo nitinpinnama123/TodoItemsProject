@@ -13,6 +13,8 @@
     </ul>
     <div class="nav-right" *ngIf="currentUser$ | async as user">
         <span>Welcome, {{ user.name }}</span>
-        <button (click)="logout()">Logout</button>
+        <button (click)="logout()" [disabled]="loggingOut">
+            {{ loggingOut ? 'Logging out...' : 'Logout' }}
+        </button>
     </div>
 </nav>

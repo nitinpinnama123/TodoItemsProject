@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth.service';
 export class AppNavbarComponent {
     title = 'Todo Item Management System';
     currentUser$: Observable<AuthResponse | null>;
+    loggingOut = false;
 
     constructor(
         private authService: AuthService,
@@ -26,7 +27,22 @@ export class AppNavbarComponent {
     }
 
     logout() {
-        this.authService.logout();
         this.router.navigate(['/login']);
+
+        console.log('Logout clicked');
+
+        this.loggingOut = true;
+
+        this.authService.logout().subscribe({
+            next: () => {
+                console.log('Logout successful');
+                this.loggingOut = false;
+            },
+            error: (err: any) => {
+                console.error('Logout error:', err);
+                this.authService.logoutInstant();  // Fallback
+                this.loggingOut = false;
+            }
+       });
     }
 }

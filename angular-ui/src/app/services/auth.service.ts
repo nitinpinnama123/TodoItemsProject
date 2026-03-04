@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap, catchError } from 'rxjs';
 import { LoginRequest, RegisterRequest, AuthResponse } from '../models/auth.model';
 import { environment } from '../../environments/environment';
 
@@ -12,7 +13,10 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<AuthResponse | null>(this.getUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (user) this.currentUserSubject.next(user);
+  }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
@@ -26,10 +30,20 @@ export class AuthService {
     );
   }
 
-  logout(): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/logout`, {}).pipe(
-      tap(() => this.clearUserSession())
+  logout(): Observable<any> {
+    console.log('Logging out...');
+    return this.http.post(`${this.apiUrl}/logout`, {}).
+    pipe(
+        catchError(err => {
+                  console.log('Backend logout failed, continuing');
+                  return of(null);  // Continue even if backend fails
+                }),
+        tap(() => this.clearUserData())
     );
+  }
+
+  logoutInstant(): void {
+      this.clearUserData();
   }
 
   private setUserSession(response: AuthResponse): void {
@@ -45,9 +59,18 @@ export class AuthService {
     this.currentUserSubject.next(user);
   }
 
-  private clearUserSession(): void {
+  private clearUserData(): void {
+
+    // 1. Clear localStorage
     localStorage.removeItem('currentUser');
+
+    // 2. Clear BehaviorSubject
     this.currentUserSubject.next(null);
+
+    // 3. Redirect to login
+    this.router.navigate(['/login']);
+
+    console.log('User logged out, redirected');
   }
 
   private getUserFromStorage(): AuthResponse | null {
