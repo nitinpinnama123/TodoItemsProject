@@ -80,7 +80,7 @@ public class TodoItemServiceTest {
 
         TodoItem result = todoItemService.getTodoItemById(99L);
 
-        assertNotNull(result);
+        assertNull(result);
         assertNull(result.getId());
     }
 

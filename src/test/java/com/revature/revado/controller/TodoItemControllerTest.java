@@ -118,7 +118,7 @@ public class TodoItemControllerTest {
         User existingUser = new User(null, "John", "Doe", "JohnDoe", "pwd123", "john.doe@example.com", User.Role.USER, LocalDateTime.now(), LocalDateTime.now());
         User userSaved = userRepo.save(existingUser);
 
-        TodoItem existingTodoItem = new TodoItem(null, "title", "description", TodoItem.ItemStatus.PENDING, null, null, LocalDateTime.now(), LocalDateTime.now());
+        TodoItem existingTodoItem = new TodoItem(null, "title", "description", TodoItem.ItemStatus.PENDING, null, null, null, LocalDateTime.now(), LocalDateTime.now());
         TodoItem saved = todoRepo.save(existingTodoItem);
 
         TodoItemRequest update_req = new TodoItemRequest("updated title", "description", TodoItem.ItemStatus.PENDING, null, userSaved.getId());
