@@ -39,7 +39,7 @@ public class SubtaskServiceTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -60,7 +60,7 @@ public class SubtaskServiceTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -83,7 +83,7 @@ public class SubtaskServiceTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -104,7 +104,7 @@ public class SubtaskServiceTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
         TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
@@ -122,7 +122,7 @@ public class SubtaskServiceTest {
         User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
-        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null);
+        TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null ,null);
         TodoItem savedTask1 = todoItemRepository.save(todoItem1);
 
         Subtask subtask = new Subtask(null, "Subtask 1", false, savedTask1, null, null);
