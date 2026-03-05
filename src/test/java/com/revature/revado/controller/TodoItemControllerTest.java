@@ -142,8 +142,9 @@ public class TodoItemControllerTest {
         todoItemController.deleteTodoItem(created.getId());
 
 
-        TodoItem deleted = todoItemController.getTodoItemById(created.getId());
-        assertNull(deleted.getId());
+        //TodoItem deleted = todoItemController.getTodoItemById(created.getId());
+        //assertNull(deleted.getId());
+        assertFalse(todoRepo.existsById(created.getId()));
     }
 
 }

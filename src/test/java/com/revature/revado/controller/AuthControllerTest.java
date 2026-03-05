@@ -4,6 +4,7 @@ import com.revature.revado.dto.AuthResponse;
 import com.revature.revado.dto.LoginRequest;
 import com.revature.revado.dto.RegisterRequest;
 import com.revature.revado.service.AuthService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author $ {USER}
  **/
 @SpringBootTest
+@Transactional
 class AuthControllerTest {
 
     @Autowired

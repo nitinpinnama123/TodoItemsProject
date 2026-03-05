@@ -101,7 +101,7 @@ public class SubtaskServiceTest {
     @Test
     void toggleSubtaskComplete_ShouldFlipCompletionStatus() {
 
-        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        User user1 = new User(null, "John", "Doe", "john-doe", "pwd", "john.doe@example.com", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
         TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null, null);
@@ -119,7 +119,7 @@ public class SubtaskServiceTest {
     @Test
     void deleteSubtask_ShouldRemoveSubtask() {
 
-        User user1 = new User(null, "John", "Doe", "john-doe", "john.doe@example.com", "pwd", User.Role.USER, null, null);
+        User user1 = new User(null, "John", "Doe", "john-doe", "pwd", "john.doe@example.com", User.Role.USER, null, null);
         user1 = userRepository.save(user1);
 
         TodoItem todoItem1 = new TodoItem(null, "Task 1", "Description 1", TodoItem.ItemStatus.PENDING, null, null, null, null ,null);
