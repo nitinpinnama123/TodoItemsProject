@@ -1,0 +1,1 @@
+rootProject.name = "HackerRank1_backend"
