@@ -1,0 +1,85 @@
+To make the visual transition between "Cold" and "Warm" themes obvious and professional, your CSS should focus on gradients and layout spacing.
+
+Following the logic established in your requirements, here is the App.css implementation.
+
+App.css
+CSS
+/* Layout Containers */
+.app-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+/* Theme Logic */
+.cold-theme {
+  background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+  color: #2c3e50;
+  border: 1px solid #84a9e1;
+}
+
+.warm-theme {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  color: #5e3a1b;
+  border: 1px solid #e29070;
+}
+
+/* Weather Card Styling */
+.weather-card {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+}
+
+.weather-card h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Detail Variants */
+.full-detail {
+  max-width: 500px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.minimal-detail {
+  text-align: center;
+}
+
+/* Typography and Extras */
+.temp-display {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.metadata {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
+  margin-top: 10px;
+}
