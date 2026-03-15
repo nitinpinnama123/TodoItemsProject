@@ -13,7 +13,12 @@ const TaskList = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [newTaskAssignedTo, setNewTaskAssignedTo] = useState('');
   const [expandedTasks, setExpandedTasks] = useState(new Set());
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editAssignedTo, setEditAssignedTo] = useState('');
+
 
   const { user, logout } = useAuth();
   const taskStatuses = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
@@ -52,11 +57,24 @@ const TaskList = () => {
     if (!newTaskTitle.trim()) return;
 
     try {
-      await taskAPI.createTask({
+      const taskData = {
         title: newTaskTitle,
+        description: newTaskDescription || undefined,
         status: 'PENDING',
-      });
+      };
+
+      // Add assignedToId if a user is selected
+      if (newTaskAssignedTo) {
+        taskData.assignedToId = parseInt(newTaskAssignedTo);
+      }
+
+      await taskAPI.createTask(taskData);
+
+      // Reset form
       setNewTaskTitle('');
+      setNewTaskDescription('');
+      setNewTaskAssignedTo('');
+
       loadTasks();
     } catch (err) {
       setError('Failed to create task');
@@ -84,6 +102,37 @@ const TaskList = () => {
       setError('Failed to delete task');
       console.error('Error deleting task:', err);
     }
+  };
+
+  const handleAssignUser = async (taskId, userId) => {
+    try {
+      const task = tasks.find(t => t.id === taskId);
+
+      const updatedTask = {
+        title: task.title,
+        description: task.description || '',
+        status: task.status,
+        assignedToId: userId ? parseInt(userId) : null,
+      };
+
+      await taskAPI.updateTask(taskId, updatedTask);
+      setEditingTaskId(null);
+      setEditAssignedTo('');
+      loadTasks();
+    } catch (err) {
+      setError('Failed to assign user');
+      console.error('Error assigning user:', err);
+    }
+  };
+
+  const startEditingAssignment = (taskId, currentAssignedToId) => {
+    setEditingTaskId(taskId);
+    setEditAssignedTo(currentAssignedToId ? currentAssignedToId.toString() : '');
+  };
+
+  const cancelEditingAssignment = () => {
+    setEditingTaskId(null);
+    setEditAssignedTo('');
   };
 
   const toggleTaskExpanded = (taskId) => {
@@ -143,13 +192,33 @@ const TaskList = () => {
         {/* New Task Form */}
         <div className="new-task-section">
           <form onSubmit={handleAddTask} className="new-task-form">
-            <input
-              type="text"
-              value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value)}
-              placeholder="What needs to be done?"
-              className="new-task-input"
-            />
+           <div className="new-task-inputs">
+                <input
+                  type="text"
+                  value={newTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
+                  placeholder="What needs to be done?"
+                  className="new-task-input"
+                  required
+                />
+                <input
+                  type="text"
+                  value={newTaskDescription}
+                  onChange={(e) => setNewTaskDescription(e.target.value)}
+                  placeholder="Description (optional)"
+                  className="new-task-input"
+                />
+                <select
+                  value={newTaskAssignedTo}
+                  onChange={(e) => setNewTaskAssignedTo(e.target.value)}
+                  className="new-task-select"
+                >
+                  <option value="">Assign to user (optional)</option>
+                  {users.map(u => (
+                    <option key={u.id} value={u.id}>{u.username}</option>
+                  ))}
+                </select>
+            </div>
             <button type="submit" className="btn btn-primary">
               Add Task
             </button>
@@ -167,7 +236,7 @@ const TaskList = () => {
             >
               <option value="">All Users</option>
               {users.map(u => (
-                <option key={u.id} value={u.id}>{u.name}</option>
+                <option key={u.id} value={u.id}>{u.username}</option>
               ))}
             </select>
           </div>
@@ -215,8 +284,14 @@ const TaskList = () => {
         {/* Task Grid */}
         {!loading && tasks.length > 0 && (
           <div className="task-grid">
-            {tasks.map(task => (
-              <div key={task.id} className={`task-card ${task.status === 'COMPLETED' ? 'completed' : ''}`}>
+            {tasks.map(task => {
+
+              const progress = getSubtaskProgress(task.subtasks);
+              const isEditing = editingTaskId === task.id;
+
+              return (
+                <div key={task.id} className={`task-card ${task.status === 'COMPLETED' ? 'completed' : ''}`}>
+
                 {/* Task Header */}
                 <div className="task-header">
                   <div className="task-title-section">
@@ -242,11 +317,55 @@ const TaskList = () => {
                 )}
 
                 {/* Task Meta */}
-                {task.assignedTo && (
-                  <div className="task-meta">
-                    <strong>Assigned to:</strong> {task.assignedTo.name}
+                <div className="task-assignment">
+                    {!isEditing ? (
+                      <div className="assignment-display">
+                        <div className="assignment-info">
+                          <strong>👤 Assigned to:</strong>{' '}
+                          {task.assignedTo ? (
+                            <span className="assigned-user">{task.assignedTo.username}</span>
+                          ) : (
+                            <span className="unassigned">Unassigned</span>
+                          )}
+                        </div>
+                        <button
+                          className="btn btn-sm btn-outline"
+                          onClick={() => startEditingAssignment(task.id, task.assignedTo?.id)}
+                        >
+                          {task.assignedTo ? 'Reassign' : 'Assign'}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="assignment-edit">
+                        <select
+                          value={editAssignedTo}
+                          onChange={(e) => setEditAssignedTo(e.target.value)}
+                          className="form-control-sm"
+                          autoFocus
+                        >
+                          <option value="">Unassigned</option>
+                          {users.map(u => (
+                            <option key={u.id} value={u.id}>{u.username}</option>
+                          ))}
+                        </select>
+                        <div className="assignment-actions">
+                          <button
+                            className="btn btn-sm btn-primary"
+                            onClick={() => handleAssignUser(task.id, editAssignedTo)}
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="btn btn-sm btn-secondary"
+                            onClick={cancelEditingAssignment}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+
 
                 {/* Complete Checkbox */}
                 <div className="task-complete-section">
@@ -306,7 +425,8 @@ const TaskList = () => {
                   showOnlyInput={!task.subtasks || task.subtasks.length === 0}
                 />
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
